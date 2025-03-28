@@ -26,9 +26,9 @@ const SOUNDS = {
   crosswordCorrect: new Audio("/sounds/crossword-correct.mp3"),
   crosswordWrong: new Audio("/sounds/crossword-wrong.mp3"),
   crosswordComplete: new Audio("/sounds/crossword-complete.mp3"),
-  chessMove: new Audio("/sounds/chess-move.mp3"),
-  chessCapture: new Audio("/sounds/chess-capture.mp3"),
-  chessCheck: new Audio("/sounds/chess-check.mp3"),
+  chessMove: new Audio("/sounds/move.mp3"),
+  chessCapture: new Audio("/sounds/eat.mp3"),
+  chessCheck: new Audio("/sounds/click.mp3"),
 };
 
 // Set volume for all sounds
