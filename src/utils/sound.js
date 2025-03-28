@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import useSound from "use-sound";
 
 const SOUNDS = {
   click: new Audio("/sounds/click.mp3"),
@@ -37,44 +38,23 @@ Object.values(SOUNDS).forEach((sound) => {
 });
 
 export const useGameSounds = () => {
-  const playSound = useCallback((soundName) => {
-    const sound = SOUNDS[soundName];
-    if (sound) {
-      sound.currentTime = 0;
-      sound.play().catch((error) => {
-        console.error(`Error playing sound ${soundName}:`, error);
-      });
-    }
-  }, []);
+  const [playClick] = useSound("/sounds/click.mp3", { volume: 0.5 });
+  const [playChessMove] = useSound("/sounds/chess-move.mp3", { volume: 0.5 });
+  const [playChessCapture] = useSound("/sounds/chess-capture.mp3", {
+    volume: 0.5,
+  });
+  const [playLudoDice] = useSound("/sounds/ludo-dice.mp3", { volume: 0.5 });
+  const [playLudoMove] = useSound("/sounds/ludo-move.mp3", { volume: 0.5 });
+  const [playLudoCapture] = useSound("/sounds/ludo-capture.mp3", {
+    volume: 0.5,
+  });
 
   return {
-    playClick: () => playSound("click"),
-    playWin: () => playSound("win"),
-    playLose: () => playSound("lose"),
-    playMove: () => playSound("move"),
-    playEat: () => playSound("eat"),
-    playDice: () => playSound("dice"),
-    playShoot: () => playSound("shoot"),
-    playCapture: () => playSound("capture"),
-    playSlide: () => playSound("slide"),
-    playCorrect: () => playSound("correct"),
-    playWrong: () => playSound("wrong"),
-    playPowerup: () => playSound("powerup"),
-    playBasketballBounce: () => playSound("basketballBounce"),
-    playBasketballScore: () => playSound("basketballScore"),
-    playBasketballMiss: () => playSound("basketballMiss"),
-    playLudoDice: () => playSound("ludoDice"),
-    playLudoMove: () => playSound("ludoMove"),
-    playLudoCapture: () => playSound("ludoCapture"),
-    playMathCorrect: () => playSound("mathCorrect"),
-    playMathWrong: () => playSound("mathWrong"),
-    playMathLevelUp: () => playSound("mathLevelUp"),
-    playPuzzleComplete: () => playSound("puzzleComplete"),
-    playCrosswordCorrect: () => playSound("crosswordCorrect"),
-    playCrosswordWrong: () => playSound("crosswordWrong"),
-    playCrosswordComplete: () => playSound("crosswordComplete"),
-    playChessMove: () => playSound("chessMove"),
-    playChessCapture: () => playSound("chessCapture"),
-    playChessCheck: () => playSound("chessCheck"),
+    playClick,
+    playChessMove,
+    playChessCapture,
+    playLudoDice,
+    playLudoMove,
+    playLudoCapture,
   };
 };
