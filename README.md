@@ -8,35 +8,35 @@ Visit the live demo at [https://hackathon-ashy-eight.vercel.app/](https://hackat
 
 ## Games Included
 
-1. **Tic Tac Toe**
-
-   - Classic two-player game of X's and O's
-   - Features a clean, modern interface
-   - Tracks game state and winner
-
-2. **Snake**
-
-   - Classic snake game with growing tail
-   - Obstacles and score tracking
-   - Smooth controls and animations
-
-3. **Chess**
+1. **Chess**
 
    - Two-player chess game
    - Implements standard chess rules
    - Visual piece movement and capture
 
-4. **Basketball**
-
-   - Timing-based shooting game
-   - Power meter for shot control
-   - Score tracking and time limit
-
-5. **Ludo**
+2. **Ludo**
 
    - Four-player board game
    - Dice rolling and token movement
    - Color-coded players and tokens
+
+3. **Tic Tac Toe**
+
+   - Classic two-player game of X's and O's
+   - Features a clean, modern interface
+   - Tracks game state and winner
+
+4. **Snake**
+
+   - Classic snake game with growing tail
+   - Obstacles and score tracking
+   - Smooth controls and animations
+
+5. **Basketball**
+
+   - Timing-based shooting game
+   - Power meter for shot control
+   - Score tracking and time limit
 
 6. **Snake & Ladders**
 
