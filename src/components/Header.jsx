@@ -3,11 +3,17 @@ import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
 
 const HeaderContainer = styled.header`
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
   background: #1a1a1a;
   padding: 1rem 2rem;
   display: flex;
   align-items: center;
   gap: 2rem;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const Logo = styled(Link)`
