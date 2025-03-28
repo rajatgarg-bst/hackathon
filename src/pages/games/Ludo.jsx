@@ -794,19 +794,32 @@ const Ludo = () => {
   }, [diceValue, isRolling, calculateMovableTokens, currentPlayer, getNextPlayer]);
 
   const rollDice = useCallback(() => {
+    // Don't roll if player has already won
+    if (winners.includes(currentPlayer)) {
+      console.log(`${currentPlayer.toUpperCase()} has already won, skipping turn`);
+      setCurrentPlayer(getNextPlayer(currentPlayer));
+      return;
+    }
+
+    // Don't roll if all players have won
+    if (winners.length === 4) {
+      console.log("Game is over - all players have won!");
+      return;
+    }
+
     if (isRolling || hasRolled) return;
 
     setIsRolling(true);
     playLudoDice();
 
-    // Use a random number to determine if we roll a 6 (30% chance) or another number
+    // Use a random number to determine if we roll a 6 (50% chance) or another number
     const randomValue = Math.random();
     let roll;
     
-    if (randomValue < 0.3) { // 30% chance of rolling a 6
+    if (randomValue < 0.5) { // 50% chance of rolling a 6
       roll = 6;
     } else {
-      // The remaining 70% is distributed among values 1-5
+      // The remaining 50% is distributed among values 1-5
       roll = Math.floor(Math.random() * 5) + 1;
     }
     
@@ -818,7 +831,7 @@ const Ludo = () => {
       setHasRolled(true);
       setCanRollAgain(roll === 6);
     }, 500);
-  }, [isRolling, hasRolled, playLudoDice, currentPlayer]);
+  }, [isRolling, hasRolled, playLudoDice, currentPlayer, winners, getNextPlayer]);
 
   const moveToken = useCallback((color, index) => {
     if (color !== currentPlayer || !diceValue || !movableTokens.includes(index)) return;
@@ -951,25 +964,26 @@ const Ludo = () => {
     console.log(`---------------------`);
   }, [currentPlayer, diceValue, movableTokens, tokens, winners, getNextPlayer, playLudoMove, playLudoCapture]);
 
-  // Update the useEffect for auto-rolling
+  // Update the useEffect for auto-rolling to skip winners
   useEffect(() => {
     let timer;
     
     // Auto-roll if either auto-roll or auto-roll-only is enabled
-    if ((isAutoRoll || isAutoRollOnly) && !isRolling && !hasRolled) {
+    // AND current player hasn't won yet
+    if ((isAutoRoll || isAutoRollOnly) && !isRolling && !hasRolled && !winners.includes(currentPlayer)) {
       timer = setTimeout(() => {
         rollDice();
       }, 1000); // Roll the dice every 1 second
     }
     
     return () => clearTimeout(timer);
-  }, [isAutoRoll, isAutoRollOnly, isRolling, hasRolled, rollDice]);
+  }, [isAutoRoll, isAutoRollOnly, isRolling, hasRolled, rollDice, currentPlayer, winners]);
   
-  // Update the useEffect for auto-moving tokens to only work when full auto-play is on
+  // Update the useEffect for auto-moving tokens to skip winners
   useEffect(() => {
     let timer;
     
-    if (isAutoRoll && movableTokens.length >= 1) {
+    if (isAutoRoll && movableTokens.length >= 1 && !winners.includes(currentPlayer)) {
       // Automatically make the first available move
       timer = setTimeout(() => {
         moveToken(currentPlayer, movableTokens[0]);
@@ -977,7 +991,7 @@ const Ludo = () => {
     }
     
     return () => clearTimeout(timer);
-  }, [isAutoRoll, movableTokens, currentPlayer, moveToken]);
+  }, [isAutoRoll, movableTokens, currentPlayer, moveToken, winners]);
 
   // Add function to handle toggle changes
   const handleAutoRollToggle = () => {
@@ -1050,6 +1064,11 @@ const Ludo = () => {
             ))}
           </div>
         )}
+        {winners.length === 4 && (
+          <div style={{ color: '#e74c3c', fontWeight: 'bold' }}>
+            Game Over! All players have won!
+          </div>
+        )}
         <Button onClick={resetGame}>Reset Game</Button>
         <button 
           style={{ 
@@ -1111,7 +1130,13 @@ const Ludo = () => {
           </ToggleSwitch>
         </div>
       </AutoPlayContainer>
-      <Dice onClick={rollDice} style={{ opacity: isRolling ? 0.7 : 1 }}>
+      <Dice 
+        onClick={rollDice} 
+        style={{ 
+          opacity: isRolling ? 0.7 : (winners.includes(currentPlayer) || winners.length === 4 ? 0.5 : 1),
+          cursor: winners.includes(currentPlayer) || winners.length === 4 ? 'not-allowed' : 'pointer'
+        }}
+      >
         {diceValue || "?"}
       </Dice>
       <Board>
