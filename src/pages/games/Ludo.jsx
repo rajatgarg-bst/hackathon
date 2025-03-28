@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import styled from "@emotion/styled";
 import GameContainer from "../../components/GameContainer";
 import { useGameSounds } from "../../utils/sound";
+import { css } from "@emotion/react";
 
 const LudoContainer = styled.div`
   display: flex;
@@ -57,8 +58,10 @@ const Board = styled.div`
   }
 `;
 
-const Cell = styled.div`
-  background-color: ${(props) => {
+// Define dynamic styles as functions first
+const getCellStyles = (props) => {
+  // Helper function to determine background color
+  const getBackgroundColor = () => {
     if (props.type === "homeInterior") return props.color;
     if (props.isHome) return props.color;
     if (props.isSafe && props.hasStar) return "#000000";
@@ -67,19 +70,264 @@ const Cell = styled.div`
     if (props.type === "center" && props.color) return props.color;
     if (props.isWinningPosition) return "#FFD700";
     return "#ffffff";
-  }};
-  border-radius: 2px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  border: 1px solid #000;
+  };
 
-  @media (min-width: 768px) {
-    border-radius: 3px;
-    border-width: 2px;
-  }
-`;
+  return css`
+    background-color: ${getBackgroundColor()};
+    border-radius: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border: 1px solid #000;
+
+    @media (min-width: 768px) {
+      border-radius: 3px;
+      border-width: 2px;
+    }
+  `;
+};
+
+const getTokenStyles = (props) => {
+  // Helper function to determine cursor
+  const getCursor = () => {
+    return props.canMove ? "pointer" : "default";
+  };
+
+  // Helper function to determine z-index
+  const getZIndex = () => {
+    return props.canMove ? 4 : 3;
+  };
+
+  // Helper function to determine opacity
+  const getOpacity = () => {
+    return props.canMove ? 1 : 0.95;
+  };
+
+  // Helper function to determine transform on hover
+  const getHoverTransform = () => {
+    return props.canMove ? "scale(1.2) translateY(-2px)" : "none";
+  };
+
+  // Helper function to determine filter on hover
+  const getHoverFilter = () => {
+    return props.canMove ? "brightness(1.2)" : "none";
+  };
+
+  return css`
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    cursor: ${getCursor()};
+    transition: all 0.3s ease;
+    z-index: ${getZIndex()};
+    opacity: ${getOpacity()};
+    transform-origin: center;
+
+    svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.4));
+    }
+
+    &:hover {
+      transform: ${getHoverTransform()};
+      filter: ${getHoverFilter()};
+    }
+
+    @media (min-width: 768px) {
+      width: 28px;
+      height: 28px;
+    }
+
+    @media (orientation: landscape) and (max-height: 600px) {
+      width: 18px;
+      height: 18px;
+    }
+  `;
+};
+
+const getHomeBaseStyles = (props) => {
+  // Helper function to determine transform
+  const getTransform = () => {
+    return props.isCurrentPlayer ? 'translate(-50%, -50%) scale(1.1)' : 'translate(-50%, -50%)';
+  };
+
+  // Helper function to determine color
+  const getColor = () => {
+    return props.isCurrentPlayer ? '#fff' : 'rgba(255, 255, 255, 0.8)';
+  };
+
+  // Helper function to determine text shadow
+  const getTextShadow = () => {
+    return props.isCurrentPlayer 
+      ? '0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6)' 
+      : '1px 1px 1px rgba(0, 0, 0, 0.8)';
+  };
+
+  // Helper function to determine box shadow
+  const getBoxShadow = () => {
+    return props.isCurrentPlayer ? '0 0 10px rgba(255, 255, 255, 0.6)' : 'none';
+  };
+
+  // Helper function to determine font size
+  const getFontSize = () => {
+    if (!props.isCurrentPlayer) return '0px';
+    return window.innerWidth >= 768 ? '14px' : '12px';
+  };
+
+  return css`
+    position: absolute;
+    width: 30%;
+    height: 30%;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.4);
+    top: 50%;
+    left: 50%;
+    transform: ${getTransform()};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    color: ${getColor()};
+    text-shadow: ${getTextShadow()};
+    transition: all 0.3s ease;
+    box-shadow: ${getBoxShadow()};
+
+    div {
+      font-weight: ${props.isCurrentPlayer ? 'bold' : 'normal'};
+      font-size: ${getFontSize()};
+      text-align: center;
+      width: 100%;
+      line-height: 1.2;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      animation: ${props.isCurrentPlayer ? 'pulse 2s infinite' : 'none'};
+    }
+
+    @media (min-width: 768px) {
+      border-radius: 8px;
+
+      div {
+        font-size: ${props.isCurrentPlayer ? '14px' : '0px'};
+      }
+    }
+
+    @media (orientation: landscape) and (max-height: 600px) {
+      div {
+        font-size: ${props.isCurrentPlayer ? '10px' : '0px'};
+      }
+    }
+  `;
+};
+
+const getHomeAreaStyles = (props) => {
+  // Helper function to determine box shadow
+  const getBoxShadow = () => {
+    if (!props.isCurrentPlayer) return 'none';
+    const shadows = {
+      red: '0 0 20px 8px rgba(255, 68, 68, 0.8)',
+      green: '0 0 20px 8px rgba(0, 200, 81, 0.8)',
+      yellow: '0 0 20px 8px rgba(255, 187, 51, 0.8)',
+      blue: '0 0 20px 8px rgba(51, 181, 229, 0.8)'
+    };
+    return shadows[props.color] || 'none';
+  };
+
+  // Helper function to determine border width
+  const getBorderWidth = () => {
+    if (!props.isCurrentPlayer) return '0';
+    return props.color === 'red' || props.color === 'green' || props.color === 'blue' || props.color === 'yellow' 
+      ? '2px' 
+      : '0';
+  };
+
+  // Helper function to determine animation
+  const getAnimation = () => {
+    return props.isCurrentPlayer ? 'pulse 2s infinite' : 'none';
+  };
+
+  // Helper function to determine border
+  const getBorder = () => {
+    return props.isCurrentPlayer ? '3px solid rgba(255, 255, 255, 0.8)' : 'none';
+  };
+
+  // Helper function to determine landscape box shadow
+  const getLandscapeBoxShadow = () => {
+    return props.isCurrentPlayer ? '0 0 15px 5px rgba(255, 255, 255, 0.6)' : 'none';
+  };
+
+  return css`
+    position: absolute;
+    width: ${props.size || "40%"};
+    height: ${props.size || "40%"};
+    background-color: ${props.color};
+    transition: all 0.3s ease;
+    
+    &.red {
+      top: 0;
+      left: 0;
+      box-shadow: ${getBoxShadow()};
+      animation: ${getAnimation()};
+      border: ${getBorder()};
+    }
+    
+    &.green {
+      top: 0;
+      right: 0;
+      box-shadow: ${getBoxShadow()};
+      animation: ${getAnimation()};
+      border: ${getBorder()};
+    }
+
+    &.yellow {
+      bottom: 0;
+      left: 0;
+      box-shadow: ${getBoxShadow()};
+      animation: ${getAnimation()};
+      border: ${getBorder()};
+    }
+    
+    &.blue {
+      bottom: 0;
+      right: 0;
+      box-shadow: ${getBoxShadow()};
+      animation: ${getAnimation()};
+      border: ${getBorder()};
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.4);
+      }
+      50% {
+        box-shadow: 0 0 25px 10px rgba(255, 255, 255, 0.6);
+      }
+      100% {
+        box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.4);
+      }
+    }
+
+    @media (min-width: 768px) {
+      border-radius: 8px;
+      border-width: ${getBorderWidth()};
+    }
+
+    @media (orientation: landscape) and (max-height: 600px) {
+      &.red, &.green, &.blue, &.yellow {
+        box-shadow: ${getLandscapeBoxShadow()};
+        border-width: ${getBorderWidth()};
+      }
+    }
+  `;
+};
+
+// Then define the styled components using the dynamic styles
+const Cell = styled.div`${getCellStyles}`;
+const Token = styled.div`${getTokenStyles}`;
+const HomeBase = styled.div`${getHomeBaseStyles}`;
+const HomeArea = styled.div`${getHomeAreaStyles}`;
 
 const CellCoordinates = styled.div`
   position: absolute;
@@ -97,272 +345,56 @@ const CellCoordinates = styled.div`
   }
 `;
 
-const HomeArea = styled.div`
-  position: absolute;
-  width: ${props => props.size || "40%"};
-  height: ${props => props.size || "40%"};
-  background-color: ${props => props.color};
-  border-radius: 4px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: all 0.3s ease;
-
-  @keyframes pulse {
-    0% {
-      box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.4);
-    }
-    50% {
-      box-shadow: 0 0 25px 10px rgba(255, 255, 255, 0.6);
-    }
-    100% {
-      box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.4);
-    }
-  }
-  
-  &.red {
-    top: 0;
-    left: 0;
-    box-shadow: ${props => props.isCurrentPlayer ? '0 0 20px 8px rgba(255, 68, 68, 0.8)' : 'none'};
-    animation: ${props => props.isCurrentPlayer ? 'pulse 2s infinite' : 'none'};
-    border: ${props => props.isCurrentPlayer ? '3px solid rgba(255, 255, 255, 0.8)' : 'none'};
-  }
-  
-  &.green {
-    top: 0;
-    right: 0;
-    box-shadow: ${props => props.isCurrentPlayer ? '0 0 20px 8px rgba(0, 200, 81, 0.8)' : 'none'};
-    animation: ${props => props.isCurrentPlayer ? 'pulse 2s infinite' : 'none'};
-    border: ${props => props.isCurrentPlayer ? '3px solid rgba(255, 255, 255, 0.8)' : 'none'};
-  }
-  
-  &.yellow {
-    bottom: 0;
-    left: 0;
-    box-shadow: ${props => props.isCurrentPlayer ? '0 0 20px 8px rgba(255, 187, 51, 0.8)' : 'none'};
-    animation: ${props => props.isCurrentPlayer ? 'pulse 2s infinite' : 'none'};
-    border: ${props => props.isCurrentPlayer ? '3px solid rgba(255, 255, 255, 0.8)' : 'none'};
-  }
-  
-  &.blue {
-    bottom: 0;
-    right: 0;
-    box-shadow: ${props => props.isCurrentPlayer ? '0 0 20px 8px rgba(51, 181, 229, 0.8)' : 'none'};
-    animation: ${props => props.isCurrentPlayer ? 'pulse 2s infinite' : 'none'};
-    border: ${props => props.isCurrentPlayer ? '3px solid rgba(255, 255, 255, 0.8)' : 'none'};
-  }
-
-  @media (min-width: 768px) {
-    border-radius: 8px;
-    border-width: ${props => props.isCurrentPlayer ? '4px' : '0'};
-  }
-
-  @media (orientation: landscape) and (max-height: 600px) {
-    &.red, &.green, &.blue, &.yellow {
-      box-shadow: ${props => props.isCurrentPlayer ? '0 0 15px 5px rgba(255, 255, 255, 0.6)' : 'none'};
-      border-width: ${props => props.isCurrentPlayer ? '2px' : '0'};
-    }
-  }
-`;
-
-const HomeBase = styled.div`
-  position: absolute;
-  width: 30%;
-  height: 30%;
-  border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.4);
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1;
-  color: ${props => props.isCurrentPlayer ? '#fff' : 'rgba(255, 255, 255, 0.8)'};
-  text-shadow: ${props => props.isCurrentPlayer ? '0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6)' : '1px 1px 1px rgba(0, 0, 0, 0.8)'};
-  transition: all 0.3s ease;
-  box-shadow: ${props => props.isCurrentPlayer ? '0 0 10px rgba(255, 255, 255, 0.6)' : 'none'};
-  transform: ${props => props.isCurrentPlayer ? 'translate(-50%, -50%) scale(1.1)' : 'translate(-50%, -50%)'};
-
-  div {
-    font-weight: ${props => props.isCurrentPlayer ? 'bold' : 'normal'};
-    font-size: ${props => props.isCurrentPlayer ? '12px' : '0px'};
-    text-align: center;
-    width: 100%;
-    line-height: 1.2;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    transition: all 0.3s ease;
-    animation: ${props => props.isCurrentPlayer ? 'pulse 2s infinite' : 'none'};
-  }
-
-  @keyframes pulse {
-    0% {
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6);
-    }
-    50% {
-      text-shadow: 0 0 15px rgba(255, 255, 255, 0.9), 0 0 30px rgba(255, 255, 255, 0.7);
-    }
-    100% {
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6);
-    }
-  }
-
-  @media (min-width: 768px) {
-    border-radius: 8px;
-
-    div {
-      font-size: ${props => props.isCurrentPlayer ? '14px' : '0px'};
-    }
-  }
-
-  @media (orientation: landscape) and (max-height: 600px) {
-    div {
-      font-size: ${props => props.isCurrentPlayer ? '10px' : '0px'};
-    }
-  }
-`;
-
-const Token = styled.div`
-  width: 20px;
-  height: 20px;
-  position: absolute;
-  cursor: ${(props) => (props.canMove ? "pointer" : "default")};
-  transition: all 0.3s ease;
-  z-index: ${(props) => (props.canMove ? 4 : 3)};
-  opacity: ${(props) => (props.canMove ? 1 : 0.95)};
-  transform-origin: center;
-
-  svg {
-    width: 100%;
-    height: 100%;
-    filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.4));
-  }
-
-  &:hover {
-    transform: ${(props) => (props.canMove ? "scale(1.2) translateY(-2px)" : "none")};
-    filter: ${(props) => (props.canMove ? "brightness(1.2)" : "none")};
-  }
-
-  @media (min-width: 768px) {
-    width: 28px;
-    height: 28px;
-  }
-
-  @media (orientation: landscape) and (max-height: 600px) {
-    width: 18px;
-    height: 18px;
-  }
-`;
-
-// Add this new component for the token SVG
-const TokenSVG = ({ color }) => {
-  // Define darker colors for tokens only
-  const tokenColors = {
-    "#ff4444": "#cc0000",   // Darker red for token
-    "#00C851": "#006400",   // Darker green for token
-    "#ffbb33": "#cc8800",   // Darker yellow/orange for token
-    "#33b5e5": "#004080",   // Darker blue for token
+const getStarStyles = (props) => {
+  // Helper function to determine color
+  const getColor = () => {
+    return props.isBlackBackground ? "#ffffff" : props.color;
   };
 
-  const tokenColor = tokenColors[color] || color;
+  return css`
+    font-size: 14px;
+    color: ${getColor()};
+    z-index: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-shadow: 0px 0px 1px #000;
 
-  return (
-    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        {/* Gradient for main body - more pronounced with darker base color */}
-        <radialGradient id={`grad-${color}`} cx="35%" cy="35%" r="65%">
-          <stop offset="0%" style={{ stopColor: color, stopOpacity: 0.9 }} />
-          <stop offset="40%" style={{ stopColor: tokenColor, stopOpacity: 1 }} />
-          <stop offset="100%" style={{ stopColor: tokenColor, stopOpacity: 0.9 }} />
-        </radialGradient>
-        {/* Gradient for the top sphere - more pronounced with darker base color */}
-        <radialGradient id={`grad-top-${color}`} cx="35%" cy="35%" r="65%">
-          <stop offset="0%" style={{ stopColor: color, stopOpacity: 0.9 }} />
-          <stop offset="50%" style={{ stopColor: tokenColor, stopOpacity: 1 }} />
-          <stop offset="100%" style={{ stopColor: tokenColor, stopOpacity: 0.9 }} />
-        </radialGradient>
-      </defs>
+    @media (min-width: 768px) {
+      font-size: 24px;
+    }
 
-      {/* Base/bottom circle with stronger shadow */}
-      <ellipse 
-        cx="50" 
-        cy="75" 
-        rx="30" 
-        ry="10" 
-        fill={tokenColor} 
-        opacity="0.8"
-      />
-
-      {/* Main body - conical shape with stronger outline */}
-      <path
-        d="M 25 75 L 40 25 A 10 10 0 0 1 60 25 L 75 75 Z"
-        fill={`url(#grad-${color})`}
-        stroke={tokenColor}
-        strokeWidth="2"
-      />
-
-      {/* Top sphere with stronger outline */}
-      <circle
-        cx="50"
-        cy="25"
-        r="12"
-        fill={`url(#grad-top-${color})`}
-        stroke={tokenColor}
-        strokeWidth="2"
-      />
-
-      {/* Highlight on top sphere - more pronounced */}
-      <circle
-        cx="45"
-        cy="20"
-        r="4"
-        fill="rgba(255, 255, 255, 0.8)"
-      />
-
-      {/* Bottom rim with stronger outline */}
-      <path
-        d="M 25 75 A 25 7 0 0 0 75 75"
-        fill="none"
-        stroke={tokenColor}
-        strokeWidth="3"
-      />
-    </svg>
-  );
+    @media (orientation: landscape) and (max-height: 600px) {
+      font-size: 12px;
+    }
+  `;
 };
 
-const Star = styled.div`
-  font-size: 14px;
-  color: ${(props) => props.onBlack ? "#ffffff" : props.color};
-  z-index: 1;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-shadow: 0px 0px 1px #000;
+const Star = styled.div`${getStarStyles}`;
 
-  @media (min-width: 768px) {
-    font-size: 24px;
-  }
+const getArrowStyles = (props) => {
+  // Helper function to determine color
+  const getColor = () => {
+    return props.color;
+  };
 
-  @media (orientation: landscape) and (max-height: 600px) {
-    font-size: 12px;
-  }
-`;
+  return css`
+    font-size: 14px;
+    color: ${getColor()};
+    z-index: 1;
 
-const Arrow = styled.div`
-  font-size: 14px;
-  color: ${(props) => props.color};
-  z-index: 1;
+    @media (min-width: 768px) {
+      font-size: 18px;
+    }
 
-  @media (min-width: 768px) {
-    font-size: 18px;
-  }
+    @media (orientation: landscape) and (max-height: 600px) {
+      font-size: 12px;
+    }
+  `;
+};
 
-  @media (orientation: landscape) and (max-height: 600px) {
-    font-size: 12px;
-  }
-`;
+const Arrow = styled.div`${getArrowStyles}`;
 
 const Center = styled.div`
   position: absolute;
@@ -1074,6 +1106,141 @@ const createBoard = () => {
   return board;
 };
 
+const TokenSVG = ({ color }) => {
+  // Define darker colors for tokens only
+  const tokenColors = {
+    "#ff4444": "#cc0000",   // Darker red for token
+    "#00C851": "#006400",   // Darker green for token
+    "#ffbb33": "#cc8800",   // Darker yellow/orange for token
+    "#33b5e5": "#004080",   // Darker blue for token
+  };
+
+  const tokenColor = tokenColors[color] || color;
+
+  return (
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        {/* Gradient for main body - more pronounced with darker base color */}
+        <radialGradient id={`grad-${color}`} cx="35%" cy="35%" r="65%">
+          <stop offset="0%" style={{ stopColor: color, stopOpacity: 0.9 }} />
+          <stop offset="40%" style={{ stopColor: tokenColor, stopOpacity: 1 }} />
+          <stop offset="100%" style={{ stopColor: tokenColor, stopOpacity: 0.9 }} />
+        </radialGradient>
+        {/* Gradient for the top sphere - more pronounced with darker base color */}
+        <radialGradient id={`grad-top-${color}`} cx="35%" cy="35%" r="65%">
+          <stop offset="0%" style={{ stopColor: color, stopOpacity: 0.9 }} />
+          <stop offset="50%" style={{ stopColor: tokenColor, stopOpacity: 1 }} />
+          <stop offset="100%" style={{ stopColor: tokenColor, stopOpacity: 0.9 }} />
+        </radialGradient>
+      </defs>
+
+      {/* Base/bottom circle with stronger shadow */}
+      <ellipse 
+        cx="50" 
+        cy="75" 
+        rx="30" 
+        ry="10" 
+        fill={tokenColor} 
+        opacity="0.8"
+      />
+
+      {/* Main body - conical shape with stronger outline */}
+      <path
+        d="M 25 75 L 40 25 A 10 10 0 0 1 60 25 L 75 75 Z"
+        fill={`url(#grad-${color})`}
+        stroke={tokenColor}
+        strokeWidth="2"
+      />
+
+      {/* Top sphere with stronger outline */}
+      <circle
+        cx="50"
+        cy="25"
+        r="12"
+        fill={`url(#grad-top-${color})`}
+        stroke={tokenColor}
+        strokeWidth="2"
+      />
+
+      {/* Highlight on top sphere - more pronounced */}
+      <circle
+        cx="45"
+        cy="20"
+        r="4"
+        fill="rgba(255, 255, 255, 0.8)"
+      />
+
+      {/* Bottom rim with stronger outline */}
+      <path
+        d="M 25 75 A 25 7 0 0 0 75 75"
+        fill="none"
+        stroke={tokenColor}
+        strokeWidth="3"
+      />
+    </svg>
+  );
+};
+
+// Add these styled components after other styled component definitions and before the Ludo component
+const getTitleContainerStyles = () => css`
+  text-align: center;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: min(90vw, 800px);
+  padding: 0 10px;
+  box-sizing: border-box;
+
+  @media (orientation: landscape) and (max-height: 600px) {
+    margin-bottom: 10px;
+    max-width: min(90vh, 800px);
+  }
+`;
+
+const TitleContainer = styled.div`${getTitleContainerStyles}`;
+
+const getTitleStyles = () => css`
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  margin-bottom: 10px;
+  color: #333;
+
+  @media (orientation: landscape) and (max-height: 600px) {
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
+    margin-bottom: 5px;
+  }
+`;
+
+const Title = styled.h1`${getTitleStyles}`;
+
+const getDescriptionStyles = () => css`
+  font-size: clamp(0.9rem, 3vw, 1rem);
+  color: #666;
+  line-height: 1.5;
+
+  @media (orientation: landscape) and (max-height: 600px) {
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+    line-height: 1.3;
+  }
+`;
+
+const Description = styled.p`${getDescriptionStyles}`;
+
+// Rename GameContainer to LudoGameContainer
+const getLudoGameContainerStyles = () => css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: min(90vw, 800px);
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  @media (orientation: landscape) and (max-height: 600px) {
+    max-width: min(90vh, 800px);
+  }
+`;
+
+const LudoGameContainer = styled.div`${getLudoGameContainerStyles}`;
+
 const Ludo = () => {
   const { playClick, playLudoDice, playLudoMove, playLudoCapture, toggleSound } = useGameSounds();
 
@@ -1497,53 +1664,13 @@ const Ludo = () => {
 
   return (
     <LudoContainer>
-      <div style={{ 
-        textAlign: 'center', 
-        marginBottom: '20px', 
-        width: '100%', 
-        maxWidth: 'min(90vw, 800px)',
-        padding: '0 10px',
-        boxSizing: 'border-box',
-        '@media (orientation: landscape) and (max-height: 600px)': {
-          marginBottom: '10px',
-          maxWidth: 'min(90vh, 800px)'
-        }
-      }}>
-        <h1 style={{ 
-          fontSize: 'clamp(1.5rem, 4vw, 2rem)', 
-          marginBottom: '10px', 
-          color: '#333',
-          '@media (orientation: landscape) and (max-height: 600px)': {
-            fontSize: 'clamp(1.2rem, 3vw, 1.5rem)',
-            marginBottom: '5px'
-          }
-        }}>
-          Ludo
-        </h1>
-        <p style={{ 
-          fontSize: 'clamp(0.9rem, 3vw, 1rem)', 
-          color: '#666', 
-          lineHeight: '1.5',
-          '@media (orientation: landscape) and (max-height: 600px)': {
-            fontSize: 'clamp(0.8rem, 2vw, 0.9rem)',
-            lineHeight: '1.3'
-          }
-        }}>
+      <TitleContainer>
+        <Title>Ludo</Title>
+        <Description>
           Roll the dice and move your tokens around the board. First player to get all tokens to the center wins!
-        </p>
-      </div>
-      <div style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        alignItems: 'center', 
-        width: '100%', 
-        maxWidth: 'min(90vw, 800px)',
-        margin: '0 auto',
-        boxSizing: 'border-box',
-        '@media (orientation: landscape) and (max-height: 600px)': {
-          maxWidth: 'min(90vh, 800px)'
-        }
-      }}>
+        </Description>
+      </TitleContainer>
+      <LudoGameContainer>
         <GameInfo>
           Current Player: <span style={{ color: COLORS[currentPlayer] }}>{currentPlayer.toUpperCase()}</span>
           {canRollAgain && <div>You rolled a 6! Roll again.</div>}
@@ -1654,7 +1781,7 @@ const Ludo = () => {
                     <Star 
                       color={STAR_POSITIONS.find(pos => pos.row === rowIndex && pos.col === colIndex).color}
                       isEntry={STAR_POSITIONS.find(pos => pos.row === rowIndex && pos.col === colIndex).isEntry}
-                      onBlack={cell.type === "safe" && hasStar}
+                      isBlackBackground={cell.type === "safe" && hasStar}
                     >
                       ★
                     </Star>
@@ -1794,7 +1921,7 @@ const Ludo = () => {
             })
           )}
         </Board>
-      </div>
+      </LudoGameContainer>
     </LudoContainer>
   );
 };
