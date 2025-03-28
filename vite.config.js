@@ -2,11 +2,11 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react()],
-  base: import.meta.env.PROD ? "/hackathon/" : "/",
+  base: command === "build" ? "/hackathon/" : "/",
   publicDir: "public",
   build: {
     assetsDir: "assets",
   },
-});
+}));
