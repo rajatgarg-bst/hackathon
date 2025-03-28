@@ -15,7 +15,6 @@ import {
   GiCrossedSwords,
 } from "react-icons/gi";
 import { FaSearch, FaHistory } from "react-icons/fa";
-import Header from "../components/Header";
 
 // Create a function to handle dynamic styles
 const getBackgroundColor = (props) => props.bgColor || "#f0f0f0";
@@ -131,10 +130,11 @@ const SearchResultDescription = styled.div`
 `;
 
 const MainContent = styled.main`
-  margin-top: 10px;
+  margin-top: 2rem;
   max-width: 100%;
   margin-left: auto;
   margin-right: auto;
+  padding: 0 1rem;
 `;
 
 const RecentGames = styled.div`
@@ -496,60 +496,67 @@ function Home() {
   );
 
   return (
-    <>
-      <Header searchComponent={SearchComponent} />
-      <MainContent>
-        {recentGames.length > 0 && (
-          <RecentGames>
-            <RecentGamesHeader>
-              <FaHistory /> Recent Games
-            </RecentGamesHeader>
-            <RecentGamesList>
-              {recentGames.map((game) => {
-                const IconComponent = iconMap[game.iconName];
-                if (!IconComponent) return null;
+    <ChessContainer>
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <MainContent>
+          {recentGames.length > 0 && (
+            <RecentGames>
+              <RecentGamesHeader>
+                <FaHistory /> Recent Games
+              </RecentGamesHeader>
+              <RecentGamesList>
+                {recentGames.map((game) => {
+                  const IconComponent = iconMap[game.iconName];
+                  if (!IconComponent) return null;
 
-                return (
-                  <RecentGameItem
-                    key={game.id}
-                    onClick={() =>
-                      handleGameClick(games.find((g) => g.id === game.id))
-                    }
-                  >
-                    <RecentGameIcon bgColor={game.bgColor} color={game.color}>
-                      <IconComponent />
-                    </RecentGameIcon>
-                    <RecentGameInfo>
-                      <RecentGameTitle>{game.title}</RecentGameTitle>
-                      <RecentGameTime>
-                        {formatTimeAgo(game.timestamp)}
-                      </RecentGameTime>
-                    </RecentGameInfo>
-                  </RecentGameItem>
-                );
-              })}
-            </RecentGamesList>
-          </RecentGames>
-        )}
+                  return (
+                    <RecentGameItem
+                      key={game.id}
+                      onClick={() =>
+                        handleGameClick(games.find((g) => g.id === game.id))
+                      }
+                    >
+                      <RecentGameIcon bgColor={game.bgColor} color={game.color}>
+                        <IconComponent />
+                      </RecentGameIcon>
+                      <RecentGameInfo>
+                        <RecentGameTitle>{game.title}</RecentGameTitle>
+                        <RecentGameTime>
+                          {formatTimeAgo(game.timestamp)}
+                        </RecentGameTime>
+                      </RecentGameInfo>
+                    </RecentGameItem>
+                  );
+                })}
+              </RecentGamesList>
+            </RecentGames>
+          )}
 
-        <GamesGrid>
-          {games.map((game) => (
-            <GameCard
-              key={game.id}
-              onClick={() => handleGameClick(game)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <GameIcon bgColor={game.bgColor} color={game.color}>
-                {React.createElement(game.icon)}
-              </GameIcon>
-              <GameTitle>{game.title}</GameTitle>
-              <GameDescription>{game.description}</GameDescription>
-            </GameCard>
-          ))}
-        </GamesGrid>
-      </MainContent>
-    </>
+          <GamesGrid>
+            {games.map((game) => (
+              <GameCard
+                key={game.id}
+                onClick={() => handleGameClick(game)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <GameIcon bgColor={game.bgColor} color={game.color}>
+                  {React.createElement(game.icon)}
+                </GameIcon>
+                <GameTitle>{game.title}</GameTitle>
+                <GameDescription>{game.description}</GameDescription>
+              </GameCard>
+            ))}
+          </GamesGrid>
+        </MainContent>
+      </div>
+    </ChessContainer>
   );
 }
 
