@@ -1,80 +1,81 @@
-import { useCallback } from "react";
+// Create audio context and oscillator for generating sounds
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-const SOUNDS = {
-  click: new Audio("/sounds/click.mp3"),
-  win: new Audio("/sounds/win.mp3"),
-  lose: new Audio("/sounds/lose.mp3"),
-  move: new Audio("/sounds/move.mp3"),
-  eat: new Audio("/sounds/eat.mp3"),
-  dice: new Audio("/sounds/dice.mp3"),
-  shoot: new Audio("/sounds/shoot.mp3"),
-  capture: new Audio("/sounds/capture.mp3"),
-  slide: new Audio("/sounds/slide.mp3"),
-  correct: new Audio("/sounds/correct.mp3"),
-  wrong: new Audio("/sounds/wrong.mp3"),
-  powerup: new Audio("/sounds/powerup.mp3"),
-  basketballBounce: new Audio("/sounds/basketball-bounce.mp3"),
-  basketballScore: new Audio("/sounds/basketball-score.mp3"),
-  basketballMiss: new Audio("/sounds/basketball-miss.mp3"),
-  ludoDice: new Audio("/sounds/ludo-dice.mp3"),
-  ludoMove: new Audio("/sounds/ludo-move.mp3"),
-  ludoCapture: new Audio("/sounds/ludo-capture.mp3"),
-  mathCorrect: new Audio("/sounds/math-correct.mp3"),
-  mathWrong: new Audio("/sounds/math-wrong.mp3"),
-  mathLevelUp: new Audio("/sounds/math-level-up.mp3"),
-  puzzleComplete: new Audio("/sounds/puzzle-complete.mp3"),
-  crosswordCorrect: new Audio("/sounds/crossword-correct.mp3"),
-  crosswordWrong: new Audio("/sounds/crossword-wrong.mp3"),
-  crosswordComplete: new Audio("/sounds/crossword-complete.mp3"),
-  chessMove: new Audio("/sounds/chess-move.mp3"),
-  chessCapture: new Audio("/sounds/chess-capture.mp3"),
-  chessCheck: new Audio("/sounds/chess-check.mp3"),
+// Sound enabled state
+let isSoundEnabled = true;
+
+const createSound = (frequency, duration, type = 'sine') => {
+  if (!isSoundEnabled) return;
+  
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  
+  oscillator.type = type;
+  oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  
+  gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+  
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + duration);
 };
 
-// Set volume for all sounds
-Object.values(SOUNDS).forEach((sound) => {
-  sound.volume = 0.5;
-});
-
 export const useGameSounds = () => {
-  const playSound = useCallback((soundName) => {
-    const sound = SOUNDS[soundName];
-    if (sound) {
-      sound.currentTime = 0;
-      sound.play().catch((error) => {
-        console.error(`Error playing sound ${soundName}:`, error);
-      });
-    }
-  }, []);
+  const playClick = () => {
+    createSound(440, 0.1); // A4 note, 100ms duration
+  };
+
+  const playLudoDice = () => {
+    createSound(880, 0.2, 'square'); // A5 note, 200ms duration, square wave
+  };
+
+  const playLudoMove = () => {
+    createSound(660, 0.15, 'sine'); // E5 note, 150ms duration
+  };
+
+  const playLudoCapture = () => {
+    createSound(220, 0.3, 'triangle'); // A3 note, 300ms duration, triangle wave
+  };
+
+  const toggleSound = () => {
+    isSoundEnabled = !isSoundEnabled;
+    return isSoundEnabled;
+  };
+
+  const getSoundEnabled = () => isSoundEnabled;
 
   return {
-    playClick: () => playSound("click"),
-    playWin: () => playSound("win"),
-    playLose: () => playSound("lose"),
-    playMove: () => playSound("move"),
-    playEat: () => playSound("eat"),
-    playDice: () => playSound("dice"),
-    playShoot: () => playSound("shoot"),
-    playCapture: () => playSound("capture"),
-    playSlide: () => playSound("slide"),
-    playCorrect: () => playSound("correct"),
-    playWrong: () => playSound("wrong"),
-    playPowerup: () => playSound("powerup"),
-    playBasketballBounce: () => playSound("basketballBounce"),
-    playBasketballScore: () => playSound("basketballScore"),
-    playBasketballMiss: () => playSound("basketballMiss"),
-    playLudoDice: () => playSound("ludoDice"),
-    playLudoMove: () => playSound("ludoMove"),
-    playLudoCapture: () => playSound("ludoCapture"),
-    playMathCorrect: () => playSound("mathCorrect"),
-    playMathWrong: () => playSound("mathWrong"),
-    playMathLevelUp: () => playSound("mathLevelUp"),
-    playPuzzleComplete: () => playSound("puzzleComplete"),
-    playCrosswordCorrect: () => playSound("crosswordCorrect"),
-    playCrosswordWrong: () => playSound("crosswordWrong"),
-    playCrosswordComplete: () => playSound("crosswordComplete"),
-    playChessMove: () => playSound("chessMove"),
-    playChessCapture: () => playSound("chessCapture"),
-    playChessCheck: () => playSound("chessCheck"),
+    playClick,
+    playWin: playClick,
+    playLose: playClick,
+    playMove: playClick,
+    playEat: playClick,
+    playDice: playClick,
+    playShoot: playClick,
+    playCapture: playClick,
+    playSlide: playClick,
+    playCorrect: playClick,
+    playWrong: playClick,
+    playPowerup: playClick,
+    playBasketballBounce: playClick,
+    playBasketballScore: playClick,
+    playBasketballMiss: playClick,
+    playLudoDice,
+    playLudoMove,
+    playLudoCapture,
+    playMathCorrect: playClick,
+    playMathWrong: playClick,
+    playMathLevelUp: playClick,
+    playPuzzleComplete: playClick,
+    playCrosswordCorrect: playClick,
+    playCrosswordWrong: playClick,
+    playCrosswordComplete: playClick,
+    playChessMove: playClick,
+    playChessCapture: playClick,
+    playChessCheck: playClick,
+    toggleSound,
+    getSoundEnabled
   };
 };

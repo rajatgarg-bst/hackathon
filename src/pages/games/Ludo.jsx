@@ -24,6 +24,8 @@ const Cell = styled.div`
     if (props.isSafe && props.hasStar) return "#000000";
     if (props.isPath && props.color) return props.color;
     if (props.isPath) return "#f0f0f0";
+    if (props.type === "center" && props.color) return props.color;
+    if (props.isWinningPosition) return "#FFD700";
     return "#ffffff";
   }};
   border-radius: 3px;
@@ -360,6 +362,7 @@ const PLAYER_PATHS = {
     { row: 7, col: 5 }, 
     { row: 7, col: 6 }, 
     { row: 7, col: 7 }, // Center (57)
+    { row: 7, col: 6 }, // Final position (57) - one cell before center
   ],
   green: [
     { row: 1, col: 8 }, // Start position (0)
@@ -420,6 +423,7 @@ const PLAYER_PATHS = {
     { row: 5, col: 7 }, 
     { row: 6, col: 7 }, 
     { row: 7, col: 7 }, // Center (57)
+    { row: 6, col: 7 }, // Final position (57) - one cell before center
   ],
   yellow: [
     { row: 13, col: 6 }, // Start position (0)
@@ -480,6 +484,7 @@ const PLAYER_PATHS = {
     { row: 9, col: 7 }, 
     { row: 8, col: 7 }, 
     { row: 7, col: 7 }, // Center (57)
+    { row: 8, col: 7 }, // Final position (57) - one cell before center
   ],
   blue: [
     { row: 8, col: 13 }, // Start position (0)
@@ -540,6 +545,7 @@ const PLAYER_PATHS = {
     { row: 7, col: 9 }, 
     { row: 7, col: 8 }, 
     { row: 7, col: 7 }, // Center (57)
+    { row: 7, col: 8 }, // Final position (57) - one cell before center
   ],
 };
 
@@ -690,11 +696,11 @@ const createBoard = () => {
     }
   }
 
-  // Add colored triangles in center
-  board[6][6] = { type: "center", color: COLORS.red, hasBorder: false };
-  board[6][8] = { type: "center", color: COLORS.green, hasBorder: false };
-  board[8][8] = { type: "center", color: COLORS.blue, hasBorder: false };
-  board[8][6] = { type: "center", color: COLORS.yellow, hasBorder: false };
+  // Add colored triangles in center with gray background
+  board[6][6] = { type: "center", color: "#808080", hasBorder: false };  // Gray
+  board[6][8] = { type: "center", color: "#808080", hasBorder: false };  // Gray
+  board[8][8] = { type: "center", color: "#808080", hasBorder: false };  // Gray
+  board[8][6] = { type: "center", color: "#808080", hasBorder: false };  // Gray
 
   // Set safe spots
   SAFE_POSITIONS.forEach(pos => {
@@ -709,7 +715,7 @@ const createBoard = () => {
 };
 
 const Ludo = () => {
-  const { playClick, playLudoDice, playLudoMove, playLudoCapture } = useGameSounds();
+  const { playClick, playLudoDice, playLudoMove, playLudoCapture, toggleSound } = useGameSounds();
 
   const [board, setBoard] = useState(createBoard());
   const [currentPlayer, setCurrentPlayer] = useState("red");
@@ -731,6 +737,12 @@ const Ludo = () => {
   // State for auto features
   const [isAutoRoll, setIsAutoRoll] = useState(false);
   const [isAutoRollOnly, setIsAutoRollOnly] = useState(false);
+
+  // Add new state variable near other state declarations
+  const [showCellAddresses, setShowCellAddresses] = useState(false);
+
+  // Add sound enabled state
+  const [isSoundEnabled, setIsSoundEnabled] = useState(true);
 
   const getNextPlayer = useCallback((player) => {
     const players = ["red", "green", "blue", "yellow"];
@@ -794,10 +806,24 @@ const Ludo = () => {
   }, [diceValue, isRolling, calculateMovableTokens, currentPlayer, getNextPlayer]);
 
   const rollDice = useCallback(() => {
-    // Don't roll if player has already won
+    // If player has already won, automatically pass to next player
     if (winners.includes(currentPlayer)) {
-      console.log(`${currentPlayer.toUpperCase()} has already won, skipping turn`);
-      setCurrentPlayer(getNextPlayer(currentPlayer));
+      console.log(`${currentPlayer.toUpperCase()} has already won, passing turn`);
+      // Find next player who hasn't won yet
+      let nextPlayer = getNextPlayer(currentPlayer);
+      let attempts = 0;
+      while (winners.includes(nextPlayer) && attempts < 4) {
+        nextPlayer = getNextPlayer(nextPlayer);
+        attempts++;
+      }
+      
+      // If all remaining players have won, end the game
+      if (attempts >= 4) {
+        console.log("All players have won!");
+        return;
+      }
+      
+      setCurrentPlayer(nextPlayer);
       return;
     }
 
@@ -858,12 +884,30 @@ const Ludo = () => {
       const newDistance = token.distance + diceValue;
       console.log(`DISTANCE CHANGE: ${color} token ${index} moving from distance ${token.distance} to ${newDistance} (dice: ${diceValue})`);
       
-      // Check if token would land on winning position (center)
+      // Check if token would land on winning position (one cell before center)
       if (newDistance === 57) {
-        console.log(`WIN: ${color} token ${index} reached center and won!`);
+        console.log(`WIN: ${color} token ${index} reached winning position!`);
+        // Set the winning position based on player color
+        let winningPosition;
+        switch(color) {
+          case 'red':
+            winningPosition = { row: 7, col: 6 };
+            break;
+          case 'green':
+            winningPosition = { row: 6, col: 7 };
+            break;
+          case 'yellow':
+            winningPosition = { row: 8, col: 7 };
+            break;
+          case 'blue':
+            winningPosition = { row: 7, col: 8 };
+            break;
+          default:
+            winningPosition = { row: 7, col: 7 }; // fallback
+        }
+        
         newTokens[color][index] = { 
-          row: 7, 
-          col: 7, 
+          ...winningPosition, 
           status: "finished", 
           distance: newDistance 
         };
@@ -942,7 +986,7 @@ const Ludo = () => {
     setHasRolled(false);
     setMovableTokens([]);
 
-    // Check if all tokens are finished
+    // Check if all tokens are finished for this player
     const allFinished = newTokens[color].every(t => t.status === "finished");
     if (allFinished && !winners.includes(color)) {
       setWinners([...winners, color]);
@@ -952,7 +996,20 @@ const Ludo = () => {
     // Next player's turn (if not 6)
     if (diceValue !== 6) {
       setTimeout(() => {
-        const nextPlayer = getNextPlayer(currentPlayer);
+        // Find next player who hasn't won yet
+        let nextPlayer = getNextPlayer(currentPlayer);
+        let attempts = 0;
+        while (winners.includes(nextPlayer) && attempts < 4) {
+          nextPlayer = getNextPlayer(nextPlayer);
+          attempts++;
+        }
+        
+        // If all remaining players have won, end the game
+        if (attempts >= 4) {
+          console.log("All players have won!");
+          return;
+        }
+        
         console.log(`NEXT TURN: ${nextPlayer}'s turn`);
         setCurrentPlayer(nextPlayer);
         setDiceValue(null);
@@ -1009,7 +1066,7 @@ const Ludo = () => {
     }
     setIsAutoRollOnly(!isAutoRollOnly);
   };
-  
+
   const resetGame = () => {
     setBoard(createBoard());
     setCurrentPlayer("red");
@@ -1027,6 +1084,7 @@ const Ludo = () => {
     setWinners([]);
     setIsAutoRoll(false);
     setIsAutoRollOnly(false);
+    setShowCellAddresses(false);
     playClick();
   };
 
@@ -1129,12 +1187,37 @@ const Ludo = () => {
             <span className="slider"></span>
           </ToggleSwitch>
         </div>
+        <div>
+          <span>Show Cell Addresses: </span>
+          <ToggleSwitch>
+            <input 
+              type="checkbox" 
+              checked={showCellAddresses} 
+              onChange={() => setShowCellAddresses(!showCellAddresses)} 
+            />
+            <span className="slider"></span>
+          </ToggleSwitch>
+        </div>
+        <div>
+          <span>Sound: </span>
+          <ToggleSwitch>
+            <input 
+              type="checkbox" 
+              checked={isSoundEnabled} 
+              onChange={() => {
+                const newState = toggleSound();
+                setIsSoundEnabled(newState);
+              }} 
+            />
+            <span className="slider"></span>
+          </ToggleSwitch>
+        </div>
       </AutoPlayContainer>
       <Dice 
         onClick={rollDice} 
         style={{ 
-          opacity: isRolling ? 0.7 : (winners.includes(currentPlayer) || winners.length === 4 ? 0.5 : 1),
-          cursor: winners.includes(currentPlayer) || winners.length === 4 ? 'not-allowed' : 'pointer'
+          opacity: isRolling ? 0.7 : 1,
+          cursor: 'pointer'
         }}
       >
         {diceValue || "?"}
@@ -1144,8 +1227,8 @@ const Ludo = () => {
           row.map((cell, colIndex) => {
             const hasStar = STAR_POSITIONS.some(pos => pos.row === rowIndex && pos.col === colIndex);
             return (
-              <Cell
-                key={`${rowIndex}-${colIndex}`}
+            <Cell
+              key={`${rowIndex}-${colIndex}`}
                 isHome={cell.type === "home" || cell.type === "homeInterior"}
                 isSafe={cell.type === "safe"}
                 isPath={cell.type === "path"}
@@ -1154,10 +1237,18 @@ const Ludo = () => {
                 type={cell.type}
                 name={`row-${rowIndex}-col-${colIndex}`}
                 hasStar={hasStar}
+                isWinningPosition={
+                  (rowIndex === 7 && colIndex === 6) || // Red's winning position
+                  (rowIndex === 6 && colIndex === 7) || // Green's winning position
+                  (rowIndex === 8 && colIndex === 7) || // Yellow's winning position
+                  (rowIndex === 7 && colIndex === 8)    // Blue's winning position
+                }
               >
-                <CellCoordinates>
-                  row-{rowIndex}-col-{colIndex}
-                </CellCoordinates>
+                {showCellAddresses && (
+                  <CellCoordinates>
+                    row-{rowIndex}-col-{colIndex}
+                  </CellCoordinates>
+                )}
                 
                 {/* Stars for all safe positions */}
                 {hasStar && (
@@ -1177,8 +1268,8 @@ const Ludo = () => {
                   >
                     {ARROW_POSITIONS.find(pos => pos.row === rowIndex && pos.col === colIndex).direction}
                   </Arrow>
-                )}
-              </Cell>
+              )}
+            </Cell>
             );
           })
         )}
