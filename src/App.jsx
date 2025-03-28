@@ -3,6 +3,7 @@ import { ThemeProvider } from "@emotion/react";
 import { Global } from "@emotion/react";
 import { theme } from "./styles/theme";
 import { globalStyles } from "./styles/globalStyles";
+import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import TicTacToe from "./pages/games/TicTacToe";
@@ -27,6 +28,7 @@ function App() {
             flexDirection: "column",
           }}
         >
+          <Header />
           <main style={{ flex: 1 }}>
             <Routes>
               <Route path="/" element={<Home />} />
