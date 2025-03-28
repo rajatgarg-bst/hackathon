@@ -283,6 +283,24 @@ const GameDescription = styled.p`
 
 const games = [
   {
+    id: "chess",
+    title: "Chess",
+    description: "Strategic two-player chess game with all standard rules",
+    path: "/games/chess",
+    icon: GiChessKing,
+    bgColor: "#FF9800",
+    color: "white",
+  },
+  {
+    id: "ludo",
+    title: "Ludo",
+    description: "Classic board game with four players and dice rolling",
+    path: "/games/ludo",
+    icon: GiDiceSixFacesFive,
+    bgColor: "#9C27B0",
+    color: "white",
+  },
+  {
     id: "tic-tac-toe",
     title: "Tic Tac Toe",
     description: "Classic two-player game of X's and O's",
@@ -301,30 +319,12 @@ const games = [
     color: "white",
   },
   {
-    id: "chess",
-    title: "Chess",
-    description: "Strategic two-player chess game with all standard rules",
-    path: "/games/chess",
-    icon: GiChessKing,
-    bgColor: "#FF9800",
-    color: "white",
-  },
-  {
     id: "basketball",
     title: "Basketball",
     description: "Test your timing in this basketball shooting game",
     path: "/games/basketball",
     icon: GiBasketballBall,
     bgColor: "#E91E63",
-    color: "white",
-  },
-  {
-    id: "ludo",
-    title: "Ludo",
-    description: "Classic board game with four players and dice rolling",
-    path: "/games/ludo",
-    icon: GiDiceSixFacesFive,
-    bgColor: "#9C27B0",
     color: "white",
   },
   {
