@@ -2,6 +2,10 @@
 
 A collection of classic and fun games built with React. This project features a modern, responsive design with smooth animations and intuitive user interfaces.
 
+## Live Demo
+
+Visit the live demo at [https://hackathon-ashy-eight.vercel.app/](https://hackathon-ashy-eight.vercel.app/)
+
 ## Games Included
 
 1. **Tic Tac Toe**
@@ -88,6 +92,15 @@ A collection of classic and fun games built with React. This project features a 
 
 5. Open your browser and visit `http://localhost:5173`
 
+## Deployment
+
+This project is deployed using Vercel. To deploy your own version:
+
+1. Fork this repository
+2. Create a new project on [Vercel](https://vercel.com)
+3. Import your forked repository
+4. Vercel will automatically detect the Vite configuration and set up the build settings
+
 ## Technologies Used
 
 - React
@@ -99,19 +112,5 @@ A collection of classic and fun games built with React. This project features a 
 ## Project Structure
 
 ```
-src/
-├── components/     # Reusable components
-├── pages/         # Page components
-│   └── games/     # Game components
-├── styles/        # Global styles and theme
-├── context/       # React context providers
-└── assets/        # Static assets
+
 ```
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
