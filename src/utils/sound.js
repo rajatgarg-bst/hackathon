@@ -1,6 +1,9 @@
 import { useCallback } from "react";
 import useSound from "use-sound";
 
+// Create audio context and oscillator for generating sounds
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
 const SOUNDS = {
   click: new Audio("/sounds/click.mp3"),
   win: new Audio("/sounds/win.mp3"),
@@ -17,9 +20,6 @@ const SOUNDS = {
   basketballBounce: new Audio("/sounds/basketball-bounce.mp3"),
   basketballScore: new Audio("/sounds/basketball-score.mp3"),
   basketballMiss: new Audio("/sounds/basketball-miss.mp3"),
-  ludoDice: new Audio("/sounds/ludo-dice.mp3"),
-  ludoMove: new Audio("/sounds/ludo-move.mp3"),
-  ludoCapture: new Audio("/sounds/ludo-capture.mp3"),
   mathCorrect: new Audio("/sounds/math-correct.mp3"),
   mathWrong: new Audio("/sounds/math-wrong.mp3"),
   mathLevelUp: new Audio("/sounds/math-level-up.mp3"),
@@ -35,13 +35,44 @@ const SOUNDS = {
 // Sound enabled state
 let isSoundEnabled = true;
 
+const createSound = (frequency, duration, type = 'sine') => {
+  if (!isSoundEnabled) return;
+  
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  
+  oscillator.type = type;
+  oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  
+  gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+  
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + duration);
+};
+
 export const useGameSounds = () => {
   const [playClick] = useSound("/sounds/click.mp3", { volume: 0.5 });
   const [playChessMove] = useSound("/sounds/chess-move.mp3", { volume: 0.5 });
   const [playChessCapture] = useSound("/sounds/chess-capture.mp3", { volume: 0.5 });
-  const [playLudoDice] = useSound("/sounds/ludo-dice.mp3", { volume: 0.5 });
-  const [playLudoMove] = useSound("/sounds/ludo-move.mp3", { volume: 0.5 });
-  const [playLudoCapture] = useSound("/sounds/ludo-capture.mp3", { volume: 0.5 });
+
+  // Ludo sounds using Web Audio API
+  const playLudoDice = useCallback(() => {
+    if (!isSoundEnabled) return;
+    createSound(880, 0.2, 'square'); // A5 note, 200ms duration, square wave
+  }, []);
+
+  const playLudoMove = useCallback(() => {
+    if (!isSoundEnabled) return;
+    createSound(660, 0.15, 'sine'); // E5 note, 150ms duration
+  }, []);
+
+  const playLudoCapture = useCallback(() => {
+    if (!isSoundEnabled) return;
+    createSound(220, 0.3, 'triangle'); // A3 note, 300ms duration, triangle wave
+  }, []);
 
   // Add back the missing sound functions using the SOUNDS object
   const playWin = useCallback(() => {
