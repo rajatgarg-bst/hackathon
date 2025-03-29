@@ -19,6 +19,7 @@ import {
   GiCardRandom,
   GiEarthAmerica,
   GiWorld,
+  GiPingPongBat,
 } from "react-icons/gi";
 import { FaSearch, FaHistory } from "react-icons/fa";
 import Header from "../components/Header";
@@ -423,6 +424,15 @@ const games = [
     bgColor: "#9C27B0",
     color: "white",
   },
+  {
+    id: "table-tennis",
+    title: "Table Tennis",
+    description: "Classic ping pong game with paddle controls",
+    path: "/games/table-tennis",
+    icon: GiPingPongBat,
+    bgColor: "#FF5722",
+    color: "white",
+  },
 ];
 
 function Home() {
@@ -476,6 +486,7 @@ function Home() {
     GiCardRandom,
     GiEarthAmerica,
     GiWorld,
+    GiPingPongBat,
   };
 
   useEffect(() => {
