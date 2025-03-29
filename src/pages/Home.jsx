@@ -18,6 +18,7 @@ import {
   GiMineExplosion,
   GiCardRandom,
   GiEarthAmerica,
+  GiWorld,
 } from "react-icons/gi";
 import { FaSearch, FaHistory } from "react-icons/fa";
 import Header from "../components/Header";
@@ -413,6 +414,15 @@ const games = [
     bgColor: "#03A9F4",
     color: "white",
   },
+  {
+    id: "capitals-quiz",
+    title: "Capitals Quiz",
+    description: "Test your knowledge of world capitals",
+    path: "/games/capitals-quiz",
+    icon: GiWorld,
+    bgColor: "#9C27B0",
+    color: "white",
+  },
 ];
 
 function Home() {
@@ -465,6 +475,7 @@ function Home() {
     GiMineExplosion,
     GiCardRandom,
     GiEarthAmerica,
+    GiWorld,
   };
 
   useEffect(() => {

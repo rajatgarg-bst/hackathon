@@ -20,6 +20,7 @@ import Sudoku from "./games/sudoku";
 import Minesweeper from "./games/minesweeper";
 import MemoryCardFlip from "./games/memory-card-flip";
 import WorldMapPuzzle from "./games/world-map-puzzle";
+import CapitalsQuiz from "./games/capitals-quiz";
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
               <Route path="/games/minesweeper" element={<Minesweeper />} />
               <Route path="/games/memory-card-flip" element={<MemoryCardFlip />} />
               <Route path="/games/world-map-puzzle" element={<WorldMapPuzzle />} />
+              <Route path="/games/capitals-quiz" element={<CapitalsQuiz />} />
             </Routes>
           </main>
           <Footer />
