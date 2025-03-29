@@ -17,6 +17,7 @@ import SlidingPuzzle from "./pages/games/SlidingPuzzle";
 import Crossword from "./pages/games/Crossword";
 import ColorMatcher from "./pages/games/ColorMatcher";
 import Sudoku from "./games/sudoku";
+import Minesweeper from "./games/minesweeper";
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
               <Route path="/games/crossword" element={<Crossword />} />
               <Route path="/games/color-matcher" element={<ColorMatcher />} />
               <Route path="/games/sudoku" element={<Sudoku />} />
+              <Route path="/games/minesweeper" element={<Minesweeper />} />
             </Routes>
           </main>
           <Footer />

@@ -15,6 +15,7 @@ import {
   GiCrossedSwords,
   GiPalette,
   GiPerspectiveDiceSixFacesRandom,
+  GiMineExplosion,
 } from "react-icons/gi";
 import { FaSearch, FaHistory } from "react-icons/fa";
 import Header from "../components/Header";
@@ -383,6 +384,15 @@ const games = [
     bgColor: "#009688",
     color: "white",
   },
+  {
+    id: "minesweeper",
+    title: "Minesweeper",
+    description: "Classic puzzle game where you avoid hidden mines",
+    path: "/games/minesweeper",
+    icon: GiMineExplosion,
+    bgColor: "#673AB7",
+    color: "white",
+  },
 ];
 
 function Home() {
@@ -432,6 +442,7 @@ function Home() {
     GiCrossedSwords,
     GiPalette,
     GiPerspectiveDiceSixFacesRandom,
+    GiMineExplosion,
   };
 
   useEffect(() => {
