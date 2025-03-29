@@ -13,6 +13,7 @@ import {
   GiAbacus,
   GiPuzzle,
   GiCrossedSwords,
+  GiPalette,
 } from "react-icons/gi";
 import { FaSearch, FaHistory } from "react-icons/fa";
 import Header from "../components/Header";
@@ -300,16 +301,7 @@ const games = [
     bgColor: "#9C27B0",
     color: "white",
   },
-  {
-    id: "tic-tac-toe",
-    title: "Tic Tac Toe",
-    description: "Classic two-player game of X's and O's",
-    path: "/games/tic-tac-toe",
-    icon: GiTicTacToe,
-    bgColor: "#4CAF50",
-    color: "white",
-  },
-  {
+	{
     id: "snake",
     title: "Snake",
     description: "Classic snake game with growing tail and obstacles",
@@ -319,21 +311,30 @@ const games = [
     color: "white",
   },
   {
-    id: "basketball",
-    title: "Basketball",
-    description: "Test your timing in this basketball shooting game",
-    path: "/games/basketball",
-    icon: GiBasketballBall,
-    bgColor: "#E91E63",
+    id: "tic-tac-toe",
+    title: "Tic Tac Toe",
+    description: "Classic two-player game of X's and O's",
+    path: "/games/tic-tac-toe",
+    icon: GiTicTacToe,
+    bgColor: "#4CAF50",
     color: "white",
   },
-  {
-    id: "snake-and-ladders",
-    title: "Snake & Ladders",
-    description: "Roll the dice and climb ladders while avoiding snakes",
-    path: "/games/snake-and-ladders",
-    icon: GiSnakeTongue,
-    bgColor: "#00BCD4",
+	{
+    id: "sliding-puzzle",
+    title: "Sliding Puzzle",
+    description: "Arrange the numbers in order by sliding the tiles",
+    path: "/games/sliding-puzzle",
+    icon: GiPuzzle,
+    bgColor: "#607D8B",
+    color: "white",
+  },
+	{
+    id: "color-matcher",
+    title: "Color Matcher",
+    description: "Match colors with their names",
+    path: "/games/color-matcher",
+    icon: GiPalette,
+    bgColor: "#FF5722",
     color: "white",
   },
   {
@@ -345,13 +346,13 @@ const games = [
     bgColor: "#795548",
     color: "white",
   },
-  {
-    id: "sliding-puzzle",
-    title: "Sliding Puzzle",
-    description: "Arrange the numbers in order by sliding the tiles",
-    path: "/games/sliding-puzzle",
-    icon: GiPuzzle,
-    bgColor: "#607D8B",
+	{
+    id: "snake-and-ladders",
+    title: "Snake & Ladders",
+    description: "Roll the dice and climb ladders while avoiding snakes",
+    path: "/games/snake-and-ladders",
+    icon: GiSnakeTongue,
+    bgColor: "#00BCD4",
     color: "white",
   },
   {
@@ -363,6 +364,16 @@ const games = [
     bgColor: "#3F51B5",
     color: "white",
   },
+	{
+    id: "basketball",
+    title: "Basketball",
+    description: "Test your timing in this basketball shooting game",
+    path: "/games/basketball",
+    icon: GiBasketballBall,
+    bgColor: "#E91E63",
+    color: "white",
+  },
+  
 ];
 
 function Home() {
@@ -410,6 +421,7 @@ function Home() {
     GiAbacus,
     GiPuzzle,
     GiCrossedSwords,
+    GiPalette,
   };
 
   useEffect(() => {

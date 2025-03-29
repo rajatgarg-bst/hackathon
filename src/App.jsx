@@ -15,6 +15,7 @@ import SnakeAndLadders from "./pages/games/SnakeAndLadders";
 import MathChallenge from "./pages/games/MathChallenge";
 import SlidingPuzzle from "./pages/games/SlidingPuzzle";
 import Crossword from "./pages/games/Crossword";
+import ColorMatcher from "./pages/games/ColorMatcher";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
               <Route path="/games/math-challenge" element={<MathChallenge />} />
               <Route path="/games/sliding-puzzle" element={<SlidingPuzzle />} />
               <Route path="/games/crossword" element={<Crossword />} />
+              <Route path="/games/color-matcher" element={<ColorMatcher />} />
             </Routes>
           </main>
           <Footer />
