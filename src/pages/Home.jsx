@@ -16,6 +16,7 @@ import {
   GiPalette,
   GiPerspectiveDiceSixFacesRandom,
   GiMineExplosion,
+  GiCardRandom,
 } from "react-icons/gi";
 import { FaSearch, FaHistory } from "react-icons/fa";
 import Header from "../components/Header";
@@ -393,6 +394,15 @@ const games = [
     bgColor: "#673AB7",
     color: "white",
   },
+  {
+    id: "memory-card-flip",
+    title: "Memory Card Flip",
+    description: "Test your memory by matching pairs of cards",
+    path: "/games/memory-card-flip",
+    icon: GiCardRandom,
+    bgColor: "#8BC34A",
+    color: "white",
+  },
 ];
 
 function Home() {
@@ -443,6 +453,7 @@ function Home() {
     GiPalette,
     GiPerspectiveDiceSixFacesRandom,
     GiMineExplosion,
+    GiCardRandom,
   };
 
   useEffect(() => {

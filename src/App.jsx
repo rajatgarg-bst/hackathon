@@ -18,6 +18,7 @@ import Crossword from "./pages/games/Crossword";
 import ColorMatcher from "./pages/games/ColorMatcher";
 import Sudoku from "./games/sudoku";
 import Minesweeper from "./games/minesweeper";
+import MemoryCardFlip from "./games/memory-card-flip";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
               <Route path="/games/color-matcher" element={<ColorMatcher />} />
               <Route path="/games/sudoku" element={<Sudoku />} />
               <Route path="/games/minesweeper" element={<Minesweeper />} />
+              <Route path="/games/memory-card-flip" element={<MemoryCardFlip />} />
             </Routes>
           </main>
           <Footer />
