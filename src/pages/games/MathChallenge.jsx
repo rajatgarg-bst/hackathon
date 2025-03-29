@@ -1,7 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import GameContainer from "../../components/GameContainer";
-import { motion } from "framer-motion";
 import { useGameSounds } from "../../utils/sound";
 
 const GameArea = styled.div`
@@ -39,10 +38,17 @@ const Score = styled.div`
   margin-bottom: ${(props) => props.theme.spacing.md};
 `;
 
-const Timer = styled.div`
+const MaxScore = styled.div`
   font-size: 1.5rem;
-  color: ${(props) => props.theme.colors.primary};
+  font-weight: bold;
+  color: ${(props) => props.theme.colors.secondary};
   margin-bottom: ${(props) => props.theme.spacing.md};
+`;
+
+const QuestionTimer = styled.div`
+  font-size: 1.2rem;
+  color: ${(props) => props.theme.colors.warning};
+  margin-bottom: ${(props) => props.theme.spacing.sm};
 `;
 
 const Controls = styled.div`
@@ -55,8 +61,7 @@ const Controls = styled.div`
 const Button = styled.button`
   background-color: ${(props) => props.theme.colors.primary};
   color: ${(props) => props.theme.colors.white};
-  padding: ${(props) => props.theme.spacing.sm}
-    ${(props) => props.theme.spacing.lg};
+  padding: ${(props) => props.theme.spacing.sm} ${(props) => props.theme.spacing.lg};
   border-radius: ${(props) => props.theme.borderRadius.sm};
   font-size: 1rem;
   transition: background-color 0.2s ease;
@@ -85,7 +90,44 @@ const DifficultyButton = styled(Button)`
       : props.theme.colors.primary};
 `;
 
+const SubmitButton = styled(Button)`
+  background-color: ${(props) => props.theme.colors.success};
+  margin-top: ${(props) => props.theme.spacing.sm};
+
+  &:hover {
+    background-color: ${(props) => props.theme.colors.success}dd;
+  }
+
+  &:disabled {
+    background-color: ${(props) => props.theme.colors.gray};
+  }
+`;
+
+const GameOver = styled.div`
+  font-size: 2rem;
+  font-weight: bold;
+  color: ${(props) => props.theme.colors.danger};
+  margin: ${(props) => props.theme.spacing.xl} 0;
+  padding: ${(props) => props.theme.spacing.lg};
+  border: 2px solid ${(props) => props.theme.colors.danger};
+  border-radius: ${(props) => props.theme.borderRadius.md};
+  background-color: ${(props) => props.theme.colors.danger}10;
+  animation: fadeIn 0.5s ease;
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+`;
+
+const FinalScore = styled.div`
+  font-size: 1.5rem;
+  color: ${(props) => props.theme.colors.text};
+  margin-top: ${(props) => props.theme.spacing.md};
+`;
+
 const GAME_DURATION = 60; // seconds
+const QUESTION_DURATION = 5; // seconds
 const DIFFICULTY_SETTINGS = {
   easy: { range: 10, operations: ["+", "-"] },
   medium: { range: 20, operations: ["+", "-", "×"] },
@@ -128,33 +170,86 @@ const generateProblem = (difficulty) => {
 };
 
 const MathChallenge = () => {
-  const { playClick, playMathCorrect, playMathWrong, playMathLevelUp } =
-    useGameSounds();
+  const { 
+    playClick, 
+    playMathCorrect, 
+    playMathWrong, 
+    playMathLevelUp, 
+    playWin, 
+    playLose 
+  } = useGameSounds();
 
   const [score, setScore] = useState(0);
+  const [maxScore, setMaxScore] = useState(() => {
+    const saved = localStorage.getItem("mathMaxScore");
+    return saved ? parseInt(saved) : 0;
+  });
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
+  const [questionTimeLeft, setQuestionTimeLeft] = useState(QUESTION_DURATION);
   const [isGameActive, setIsGameActive] = useState(false);
   const [currentProblem, setCurrentProblem] = useState(null);
   const [userAnswer, setUserAnswer] = useState("");
   const [difficulty, setDifficulty] = useState("easy");
-  const [streak, setStreak] = useState(0);
-  const [level, setLevel] = useState(1);
 
   useEffect(() => {
     let timer;
     if (isGameActive && timeLeft > 0) {
       timer = setInterval(() => {
-        setTimeLeft((prev) => prev - 1);
+        setTimeLeft((prev) => {
+          if (prev <= 3 && prev > 0) {
+            playClick(); // Countdown beep for last 3 seconds
+          }
+          return prev - 1;
+        });
       }, 1000);
     } else if (timeLeft === 0) {
       setIsGameActive(false);
+      playLose(); // Play lose sound when time runs out
     }
     return () => clearInterval(timer);
-  }, [isGameActive, timeLeft]);
+  }, [isGameActive, timeLeft, playClick, playLose]);
+
+  useEffect(() => {
+    const savedMaxScore = localStorage.getItem("mathMaxScore");
+    if (savedMaxScore) {
+      setMaxScore(parseInt(savedMaxScore));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isGameActive && score > maxScore && score > 0) {
+      setMaxScore(score);
+      localStorage.setItem("mathMaxScore", score.toString());
+      playWin(); // Play win sound for new high score
+      playMathLevelUp(); // Additional celebration sound
+    }
+  }, [isGameActive, score, maxScore, playWin, playMathLevelUp]);
+
+  useEffect(() => {
+    let timer;
+    if (isGameActive && questionTimeLeft > 0) {
+      timer = setInterval(() => {
+        setQuestionTimeLeft((prev) => {
+          if (prev <= 3 && prev > 0) {
+            playClick(); // Countdown beep for last 3 seconds of question
+          }
+          if (prev <= 1) {
+            playMathWrong();
+            setIsGameActive(false);
+            playLose(); // Play lose sound when question time runs out
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [isGameActive, questionTimeLeft, playMathWrong, playClick, playLose]);
 
   const startGame = () => {
+    playClick();
     setScore(0);
     setTimeLeft(GAME_DURATION);
+    setQuestionTimeLeft(QUESTION_DURATION);
     setIsGameActive(true);
     setCurrentProblem(generateProblem(difficulty));
     setUserAnswer("");
@@ -170,38 +265,35 @@ const MathChallenge = () => {
     if (isCorrect) {
       playMathCorrect();
       setScore((prev) => prev + 10);
-      setStreak((prev) => prev + 1);
-
-      if (streak + 1 >= 5) {
-        playMathLevelUp();
-        setLevel((prev) => prev + 1);
-        setStreak(0);
-      }
+      setUserAnswer("");
+      setCurrentProblem(generateProblem(difficulty));
+      setQuestionTimeLeft(QUESTION_DURATION);
     } else {
       playMathWrong();
-      setStreak(0);
+      setIsGameActive(false);
+      playLose(); // Play lose sound for wrong answer
     }
-
-    setUserAnswer("");
-    generateProblem(difficulty);
   };
 
   const resetGame = () => {
+    playClick();
     setIsGameActive(false);
     setScore(0);
     setTimeLeft(GAME_DURATION);
     setCurrentProblem(null);
     setUserAnswer("");
-    setStreak(0);
-    setLevel(1);
     generateProblem(difficulty);
+  };
+
+  const handleDifficultyChange = (level) => {
     playClick();
+    setDifficulty(level);
   };
 
   return (
     <GameContainer
       title="Math Challenge"
-      description="Solve math problems as quickly as you can! Choose your difficulty level and try to get the highest score."
+      description="Solve math problems within 5 seconds! One wrong answer ends the game. Choose your difficulty level and try to beat your highest score."
     >
       <GameArea>
         <DifficultySelect>
@@ -209,7 +301,7 @@ const MathChallenge = () => {
             <DifficultyButton
               key={level}
               isSelected={difficulty === level}
-              onClick={() => setDifficulty(level)}
+              onClick={() => handleDifficultyChange(level)}
               disabled={isGameActive}
             >
               {level.charAt(0).toUpperCase() + level.slice(1)}
@@ -218,28 +310,46 @@ const MathChallenge = () => {
         </DifficultySelect>
 
         <Score>Score: {score}</Score>
-        <Timer>Time Left: {timeLeft}s</Timer>
+        <MaxScore>Best Score: {maxScore}</MaxScore>
+        {isGameActive && <QuestionTimer>Time Left: {questionTimeLeft}s</QuestionTimer>}
 
-        {currentProblem && (
-          <Problem>
-            {currentProblem.num1} {currentProblem.operation}{" "}
-            {currentProblem.num2} = ?
-          </Problem>
+        {isGameActive ? (
+          <>
+            {currentProblem && (
+              <Problem>
+                {currentProblem.num1} {currentProblem.operation}{" "}
+                {currentProblem.num2} = ?
+              </Problem>
+            )}
+
+            <form onSubmit={handleAnswerSubmit}>
+              <Input
+                type="number"
+                value={userAnswer}
+                onChange={(e) => setUserAnswer(e.target.value)}
+                placeholder="Enter answer"
+                disabled={!isGameActive}
+              />
+              <SubmitButton type="submit" disabled={!isGameActive || !userAnswer}>
+                Submit Answer
+              </SubmitButton>
+            </form>
+          </>
+        ) : (
+          score > 0 && (
+            <GameOver>
+              Game Over!
+              <FinalScore>Final Score: {score}</FinalScore>
+              {score === maxScore && score > 0 && (
+                <FinalScore>🎉 New High Score! 🎉</FinalScore>
+              )}
+            </GameOver>
+          )
         )}
-
-        <form onSubmit={handleAnswerSubmit}>
-          <Input
-            type="number"
-            value={userAnswer}
-            onChange={(e) => setUserAnswer(e.target.value)}
-            placeholder="Enter answer"
-            disabled={!isGameActive}
-          />
-        </form>
 
         <Controls>
           <Button onClick={startGame} disabled={isGameActive}>
-            Start Game
+            {score > 0 ? "Play Again" : "Start Game"}
           </Button>
           <Button onClick={resetGame}>Reset Game</Button>
         </Controls>
