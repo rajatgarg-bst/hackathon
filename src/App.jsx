@@ -16,6 +16,7 @@ import MathChallenge from "./pages/games/MathChallenge";
 import SlidingPuzzle from "./pages/games/SlidingPuzzle";
 import Crossword from "./pages/games/Crossword";
 import ColorMatcher from "./pages/games/ColorMatcher";
+import Sudoku from "./games/sudoku";
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
               <Route path="/games/sliding-puzzle" element={<SlidingPuzzle />} />
               <Route path="/games/crossword" element={<Crossword />} />
               <Route path="/games/color-matcher" element={<ColorMatcher />} />
+              <Route path="/games/sudoku" element={<Sudoku />} />
             </Routes>
           </main>
           <Footer />

@@ -14,6 +14,7 @@ import {
   GiPuzzle,
   GiCrossedSwords,
   GiPalette,
+  GiPerspectiveDiceSixFacesRandom,
 } from "react-icons/gi";
 import { FaSearch, FaHistory } from "react-icons/fa";
 import Header from "../components/Header";
@@ -373,7 +374,15 @@ const games = [
     bgColor: "#E91E63",
     color: "white",
   },
-  
+  {
+    id: "sudoku",
+    title: "Sudoku",
+    description: "Classic number puzzle game with 9x9 grid",
+    path: "/games/sudoku",
+    icon: GiPerspectiveDiceSixFacesRandom,
+    bgColor: "#009688",
+    color: "white",
+  },
 ];
 
 function Home() {
@@ -422,6 +431,7 @@ function Home() {
     GiPuzzle,
     GiCrossedSwords,
     GiPalette,
+    GiPerspectiveDiceSixFacesRandom,
   };
 
   useEffect(() => {
