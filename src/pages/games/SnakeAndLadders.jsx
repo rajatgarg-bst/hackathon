@@ -1,5 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import styled from "@emotion/styled";
+import { GiSnake, GiLadder } from "react-icons/gi"; // Correct icons for snake and ladder
 import GameContainer from "../../components/GameContainer";
 
 const Board = styled.div`
@@ -81,6 +82,18 @@ const Button = styled.button`
   }
 `;
 
+const SnakeIcon = styled(GiSnake)`
+  position: absolute;
+  font-size: 2rem;
+  color: red;
+`;
+
+const LadderIcon = styled(GiLadder)`
+  position: absolute;
+  font-size: 2rem;
+  color: green;
+`;
+
 const SNAKES = {
   16: 6,
   47: 26,
@@ -107,81 +120,72 @@ const LADDERS = {
 };
 
 const createBoard = () => {
-  const board = Array(10)
-    .fill()
-    .map(() => Array(10).fill(null));
+  const board = [];
   let number = 100;
-  let direction = -1;
+  let reverse = false;
 
   for (let i = 0; i < 10; i++) {
+    const row = [];
     for (let j = 0; j < 10; j++) {
-      board[i][j] = number;
-      number += direction;
+      row.push(number--);
     }
-    direction *= -1;
+    if (reverse) row.reverse();
+    reverse = !reverse;
+    board.push(row);
   }
 
   return board;
 };
 
 const SnakeAndLadders = () => {
-  const [board, setBoard] = useState(createBoard());
-  const [currentPlayer, setCurrentPlayer] = useState(1);
-  const [diceValue, setDiceValue] = useState(null);
+  const [board] = useState(createBoard());
   const [players, setPlayers] = useState({
     1: { position: 1, color: "#ff4444" },
     2: { position: 1, color: "#33b5e5" },
   });
+  const [currentPlayer, setCurrentPlayer] = useState(1);
+  const [diceValue, setDiceValue] = useState(null);
 
   const rollDice = () => {
     const value = Math.floor(Math.random() * 6) + 1;
     setDiceValue(value);
   };
 
-  const movePlayer = (playerId) => {
-    if (playerId !== currentPlayer || !diceValue) return;
+  const movePlayer = () => {
+    if (!diceValue) return;
 
-    const player = players[playerId];
-    let newPosition = player.position + diceValue;
+    setPlayers((prev) => {
+      const player = prev[currentPlayer];
+      let newPosition = player.position + diceValue;
 
-    // Check for snakes
-    if (SNAKES[newPosition]) {
-      newPosition = SNAKES[newPosition];
-    }
-    // Check for ladders
-    else if (LADDERS[newPosition]) {
-      newPosition = LADDERS[newPosition];
-    }
+      if (newPosition > 100) return prev;
 
-    // Keep player within bounds
-    newPosition = Math.min(100, newPosition);
+      if (SNAKES[newPosition]) newPosition = SNAKES[newPosition];
+      else if (LADDERS[newPosition]) newPosition = LADDERS[newPosition];
 
-    setPlayers((prev) => ({
-      ...prev,
-      [playerId]: { ...prev[playerId], position: newPosition },
-    }));
+      return {
+        ...prev,
+        [currentPlayer]: { ...player, position: newPosition },
+      };
+    });
 
-    // Switch to next player
     setCurrentPlayer((prev) => (prev === 1 ? 2 : 1));
     setDiceValue(null);
   };
 
   const resetGame = () => {
-    setBoard(createBoard());
-    setCurrentPlayer(1);
-    setDiceValue(null);
     setPlayers({
       1: { position: 1, color: "#ff4444" },
       2: { position: 1, color: "#33b5e5" },
     });
+    setCurrentPlayer(1);
+    setDiceValue(null);
   };
 
   const getCellPosition = (number) => {
     for (let i = 0; i < 10; i++) {
       for (let j = 0; j < 10; j++) {
-        if (board[i][j] === number) {
-          return { row: i, col: j };
-        }
+        if (board[i][j] === number) return { row: i, col: j };
       }
     }
     return null;
@@ -190,7 +194,7 @@ const SnakeAndLadders = () => {
   return (
     <GameContainer
       title="Snake & Ladders"
-      description="Roll the dice and move your token. Watch out for snakes and climb the ladders to reach 100 first!"
+      description="Reach square 100 first! Beware of snakes and climb ladders to win."
     >
       <GameInfo>Current Player: {currentPlayer}</GameInfo>
       <Dice onClick={rollDice}>{diceValue || "?"}</Dice>
@@ -203,18 +207,17 @@ const SnakeAndLadders = () => {
                 const position = getCellPosition(player.position);
                 return position?.row === rowIndex &&
                   position?.col === colIndex ? (
-                  <Player
-                    key={id}
-                    color={player.color}
-                    onClick={() => movePlayer(parseInt(id))}
-                  />
+                  <Player key={id} color={player.color} />
                 ) : null;
               })}
+              {Object.keys(SNAKES).includes(cell.toString()) && <SnakeIcon />}
+              {Object.keys(LADDERS).includes(cell.toString()) && <LadderIcon />}
             </Cell>
           ))
         )}
       </Board>
       <div style={{ textAlign: "center" }}>
+        <Button onClick={movePlayer}>Move</Button>
         <Button onClick={resetGame}>Reset Game</Button>
       </div>
     </GameContainer>
