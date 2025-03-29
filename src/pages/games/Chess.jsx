@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { useGameSounds } from "../../utils/sound";
+import styled from "@emotion/styled";
+import GameContainer from "../../components/GameContainer";
+import { useSound } from "use-sound";
+import clickSound from "/sounds/chess/click.mp3";
+import eatSound from "/sounds/chess/eat.mp3";
+import loseSound from "/sounds/chess/lose.mp3";
+import moveSound from "/sounds/chess/move.mp3";
+import powerupSound from "/sounds/chess/powerup.mp3";
 
 const Chess = () => {
   const [board, setBoard] = useState([]);
@@ -11,7 +17,12 @@ const Chess = () => {
   const [fiftyMoveCounter, setFiftyMoveCounter] = useState(0);
   const [positionHistory, setPositionHistory] = useState([]);
   const [invalidMoveAttempted, setInvalidMoveAttempted] = useState(false);
-  const { playChessMove, playChessCapture, playChessCheck } = useGameSounds();
+
+  const [playClick] = useSound(clickSound);
+  const [playEat] = useSound(eatSound);
+  const [playLose] = useSound(loseSound);
+  const [playMove] = useSound(moveSound);
+  const [playPowerup] = useSound(powerupSound);
 
   // Initialize the board
   useEffect(() => {
@@ -365,8 +376,9 @@ const Chess = () => {
   };
 
   const handleMove = (startRow, startCol, endRow, endCol) => {
-    const piece = board[startRow][startCol];
-    if (!piece) return;
+    const newBoard = [...board];
+    const piece = newBoard[startRow][startCol];
+    const targetPiece = newBoard[endRow][endCol];
 
     // Check if it's the correct player's turn
     if (
@@ -379,7 +391,7 @@ const Chess = () => {
     // Check if the move is valid
     if (
       !isValidMove(
-        board,
+        newBoard,
         { row: startRow, col: startCol },
         { row: endRow, col: endCol }
       )
@@ -388,18 +400,18 @@ const Chess = () => {
     }
 
     // Create a copy of the board
-    const newBoard = JSON.parse(JSON.stringify(board));
-    const capturedPiece = newBoard[endRow][endCol];
+    const tempBoard = JSON.parse(JSON.stringify(newBoard));
+    const capturedPiece = tempBoard[endRow][endCol];
 
     // Handle special moves
     if (piece === "♙" || piece === "♟") {
       // En passant
       if (Math.abs(endCol - startCol) === 1 && !capturedPiece) {
-        newBoard[startRow][endCol] = "";
+        tempBoard[startRow][endCol] = "";
       }
       // Pawn promotion
       if ((piece === "♙" && endRow === 0) || (piece === "♟" && endRow === 7)) {
-        newBoard[endRow][endCol] = piece === "♙" ? "♕" : "♛";
+        tempBoard[endRow][endCol] = piece === "♙" ? "♕" : "♛";
       }
     }
 
@@ -407,17 +419,17 @@ const Chess = () => {
     if ((piece === "♔" || piece === "♚") && Math.abs(endCol - startCol) === 2) {
       const rookCol = endCol > startCol ? 7 : 0;
       const rookEndCol = endCol > startCol ? endCol - 1 : endCol + 1;
-      newBoard[startRow][rookEndCol] = newBoard[startRow][rookCol];
-      newBoard[startRow][rookCol] = "";
+      tempBoard[startRow][rookEndCol] = tempBoard[startRow][rookCol];
+      tempBoard[startRow][rookCol] = "";
     }
 
     // Make the move
-    newBoard[endRow][endCol] = piece;
-    newBoard[startRow][startCol] = "";
+    tempBoard[endRow][endCol] = piece;
+    tempBoard[startRow][startCol] = "";
 
     // Check if the move puts/leaves the king in check on the new board
     const color = isWhitePiece(piece) ? "white" : "black";
-    if (isInCheck(color, newBoard)) {
+    if (isInCheck(color, tempBoard)) {
       setInvalidMoveAttempted(true);
       setTimeout(() => setInvalidMoveAttempted(false), 500);
       return; // Invalid move that puts/leaves the king in check
@@ -438,7 +450,7 @@ const Chess = () => {
     setMoveHistory(newMoveHistory);
 
     // Update position history
-    const newPositionHistory = [...positionHistory, JSON.stringify(newBoard)];
+    const newPositionHistory = [...positionHistory, JSON.stringify(tempBoard)];
     setPositionHistory(newPositionHistory);
 
     // Update fifty-move counter
@@ -449,16 +461,16 @@ const Chess = () => {
     }
 
     // Update the board state
-    setBoard(newBoard);
+    setBoard(tempBoard);
     setSelectedPiece(null);
 
     // Play appropriate sound
     if (capturedPiece) {
-      playChessCapture();
-    } else if (isInCheck(isWhiteTurn ? "black" : "white", newBoard)) {
-      playChessCheck();
+      playEat();
+    } else if (isInCheck(isWhiteTurn ? "black" : "white", tempBoard)) {
+      playLose();
     } else {
-      playChessMove();
+      playMove();
     }
 
     // Check game status
@@ -466,12 +478,12 @@ const Chess = () => {
     setIsWhiteTurn(!isWhiteTurn);
 
     // Check for checkmate first using the new board state
-    if (isInCheck(nextPlayer, newBoard)) {
+    if (isInCheck(nextPlayer, tempBoard)) {
       // Check if it's checkmate by trying all possible moves on the new board
       let isCheckmated = true;
       for (let i = 0; i < 8 && isCheckmated; i++) {
         for (let j = 0; j < 8 && isCheckmated; j++) {
-          const piece = newBoard[i][j];
+          const piece = tempBoard[i][j];
           if (
             piece &&
             ((nextPlayer === "white" && isWhitePiece(piece)) ||
@@ -481,18 +493,18 @@ const Chess = () => {
               for (let endCol = 0; endCol < 8 && isCheckmated; endCol++) {
                 if (
                   isValidMove(
-                    newBoard,
+                    tempBoard,
                     { row: i, col: j },
                     { row: endRow, col: endCol }
                   )
                 ) {
                   // Try the move
-                  const tempBoard = JSON.parse(JSON.stringify(newBoard));
-                  tempBoard[endRow][endCol] = piece;
-                  tempBoard[i][j] = "";
+                  const tempBoard2 = JSON.parse(JSON.stringify(tempBoard));
+                  tempBoard2[endRow][endCol] = piece;
+                  tempBoard2[i][j] = "";
 
                   // If this move gets out of check, it's not checkmate
-                  if (!isInCheck(nextPlayer, tempBoard)) {
+                  if (!isInCheck(nextPlayer, tempBoard2)) {
                     isCheckmated = false;
                     break;
                   }
@@ -532,7 +544,7 @@ const Chess = () => {
       ) {
         // If clicking on another piece of the same color, select it
         setSelectedPiece({ row, col });
-        playChessCheck();
+        playLose();
       } else {
         // If clicking on an invalid square or opponent's piece, deselect the piece
         setSelectedPiece(null);
@@ -545,12 +557,13 @@ const Chess = () => {
           (!isWhiteTurn && isBlackPiece(piece)))
       ) {
         setSelectedPiece({ row, col });
-        playChessCheck();
+        playLose();
       }
     }
   };
 
   const resetGame = () => {
+    playPowerup();
     setBoard(createInitialBoard());
     setSelectedPiece(null);
     setIsWhiteTurn(true);
