@@ -74,37 +74,29 @@ export const useGameSounds = () => {
     createSound(220, 0.3, 'triangle'); // A3 note, 300ms duration, triangle wave
   }, []);
 
-  // Add back the missing sound functions using the SOUNDS object
-  const playWin = useCallback(() => {
-    if (isSoundEnabled) SOUNDS.win.play();
-  }, []);
-
-  const playLose = useCallback(() => {
-    if (isSoundEnabled) SOUNDS.lose.play();
-  }, []);
-
+  // Snake game sounds
   const playMove = useCallback(() => {
-    if (isSoundEnabled) SOUNDS.move.play();
+    if (!isSoundEnabled) return;
+    createSound(440, 0.1, 'sine'); // A4 note, 100ms duration
   }, []);
 
   const playEat = useCallback(() => {
-    if (isSoundEnabled) SOUNDS.eat.play();
+    if (!isSoundEnabled) return;
+    // Play a more satisfying eating sound
+    createSound(880, 0.1, 'square'); // High pitch for bite
+    setTimeout(() => {
+      createSound(440, 0.2, 'sine'); // Lower pitch for swallow
+    }, 50);
   }, []);
 
-  const playDice = useCallback(() => {
-    if (isSoundEnabled) SOUNDS.dice.play();
+  const playLose = useCallback(() => {
+    if (!isSoundEnabled) return;
+    createSound(220, 0.3, 'triangle'); // A3 note, 300ms duration, triangle wave
   }, []);
 
-  const playShoot = useCallback(() => {
-    if (isSoundEnabled) SOUNDS.shoot.play();
-  }, []);
-
-  const playCapture = useCallback(() => {
-    if (isSoundEnabled) SOUNDS.capture.play();
-  }, []);
-
-  const playSlide = useCallback(() => {
-    if (isSoundEnabled) SOUNDS.slide.play();
+  // Add back the missing sound functions using the SOUNDS object
+  const playWin = useCallback(() => {
+    if (isSoundEnabled) SOUNDS.win.play();
   }, []);
 
   const playCorrect = useCallback(() => {
@@ -176,10 +168,6 @@ export const useGameSounds = () => {
     playLose,
     playMove,
     playEat,
-    playDice,
-    playShoot,
-    playCapture,
-    playSlide,
     playCorrect,
     playWrong,
     playPowerup,
