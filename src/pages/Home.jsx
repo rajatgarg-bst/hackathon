@@ -17,6 +17,7 @@ import {
   GiPerspectiveDiceSixFacesRandom,
   GiMineExplosion,
   GiCardRandom,
+  GiEarthAmerica,
 } from "react-icons/gi";
 import { FaSearch, FaHistory } from "react-icons/fa";
 import Header from "../components/Header";
@@ -403,6 +404,15 @@ const games = [
     bgColor: "#8BC34A",
     color: "white",
   },
+  {
+    id: "world-map-puzzle",
+    title: "World Map Puzzle",
+    description: "Drag and drop countries to the correct location",
+    path: "/games/world-map-puzzle",
+    icon: GiEarthAmerica,
+    bgColor: "#03A9F4",
+    color: "white",
+  },
 ];
 
 function Home() {
@@ -454,6 +464,7 @@ function Home() {
     GiPerspectiveDiceSixFacesRandom,
     GiMineExplosion,
     GiCardRandom,
+    GiEarthAmerica,
   };
 
   useEffect(() => {
