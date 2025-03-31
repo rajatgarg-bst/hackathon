@@ -13,33 +13,110 @@ A collection of classic and modern games built with React, featuring interactive
 
 ## Games Available
 
-1. **Snake**
+1. **Tic Tac Toe**
+
+   - Classic two-player game
+   - Clean, modern interface
+   - Win detection
+   - Game state tracking
+
+2. **Snake**
 
    - Classic snake game with modern graphics
    - Growing snake mechanics
    - Score tracking
    - Collision detection
 
-2. **Chess**
+3. **Chess**
 
    - Two-player chess game
    - Standard chess rules implementation
    - Piece movement validation
    - Check and checkmate detection
 
-3. **Ludo**
+4. **Ludo**
 
    - Multi-player board game
    - Dice rolling mechanics
    - Token movement
    - Win condition checking
 
-4. **Snake & Ladders**
+5. **Snake & Ladders**
+
    - Classic board game
    - Dice rolling with animations
    - Snake and ladder mechanics
    - Multiple player support
    - Visual feedback for moves
+
+6. **Math Challenge**
+
+   - Timed math problem solving
+   - Multiple difficulty levels
+   - Score tracking
+   - Progress monitoring
+
+7. **Sliding Puzzle**
+
+   - Number arrangement puzzle
+   - Move counter
+   - Win detection
+   - Difficulty levels
+
+8. **Crossword**
+
+   - React-themed crossword puzzle
+   - Interactive grid
+   - Clue system
+   - Progress tracking
+
+9. **Color Matcher**
+
+   - Color matching game
+   - Pattern recognition
+   - Score tracking
+   - Difficulty progression
+
+10. **Sudoku**
+
+    - Classic number puzzle
+    - Multiple difficulty levels
+    - Validation system
+    - Timer feature
+
+11. **Minesweeper**
+
+    - Classic minesweeper game
+    - Multiple grid sizes
+    - Mine counter
+    - First-click safety
+
+12. **Memory Card Flip**
+
+    - Card matching game
+    - Timer feature
+    - Move counter
+    - Score tracking
+
+13. **World Map Puzzle**
+
+    - Geography learning game
+    - Interactive map
+    - Country identification
+    - Score system
+
+14. **Capitals Quiz**
+
+    - Country capitals quiz
+    - Multiple choice format
+    - Score tracking
+    - Progress monitoring
+
+15. **Table Tennis**
+    - Two-player ping pong
+    - Physics-based ball movement
+    - Score tracking
+    - Paddle controls
 
 ## Technologies Used
 
@@ -122,9 +199,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - React Icons for the game icons
 - Sound effects from various sources
 - Game assets created for this project
-
-## Contact
-
-Rajat Garg - [GitHub](https://github.com/rajatgarg-bst)
-
-Project Link: [https://github.com/rajatgarg-bst/hackathon](https://github.com/rajatgarg-bst/hackathon)
