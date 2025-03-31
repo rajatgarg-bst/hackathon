@@ -53,31 +53,30 @@ A collection of classic and modern games built with React, featuring interactive
 
    - Solve the crossword puzzle with React-themed clues
 
-10. **Basketball**
+<!-- 10. **Basketball**
+    - Test your timing in this basketball shooting game -->
 
-    - Test your timing in this basketball shooting game
-
-11. **Sudoku**
+10. **Sudoku**
 
     - Classic number puzzle game with 9x9 grid
 
-12. **Minesweeper**
+11. **Minesweeper**
 
     - Classic puzzle game where you avoid hidden mines
 
-13. **Memory Card Flip**
+12. **Memory Card Flip**
 
     - Test your memory by matching pairs of cards
 
-14. **World Map Puzzle**
+13. **World Map Puzzle**
 
     - Drag and drop countries to the correct location
 
-15. **Capitals Quiz**
+14. **Capitals Quiz**
 
     - Test your knowledge of world capitals
 
-16. **Table Tennis**
+15. **Table Tennis**
     - Classic ping pong game with paddle controls
 
 ## Technologies Used
