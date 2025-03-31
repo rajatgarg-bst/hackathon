@@ -194,7 +194,7 @@ const RecentGameItem = styled.div`
   cursor: pointer;
   transition: all 0.2s ease;
   flex-shrink: 0;
-  width: 180px;
+  max-width: 180px;
   height: 32px;
 
   &:hover {
