@@ -2,6 +2,10 @@
 
 A collection of classic and modern games built with React, featuring interactive gameplay, sound effects, and responsive design.
 
+## Live Demo
+
+🎮 [Play Now](https://hackathon-ashy-eight.vercel.app/)
+
 ## Features
 
 - 🎮 Multiple classic games in one place
