@@ -1,116 +1,130 @@
 # Game Collection
 
-A collection of classic and fun games built with React. This project features a modern, responsive design with smooth animations and intuitive user interfaces.
-
-## Live Demo
-
-Visit the live demo at [https://hackathon-ashy-eight.vercel.app/](https://hackathon-ashy-eight.vercel.app/)
-
-## Games Included
-
-1. **Chess**
-
-   - Two-player chess game
-   - Implements standard chess rules
-   - Visual piece movement and capture
-
-2. **Ludo**
-
-   - Four-player board game
-   - Dice rolling and token movement
-   - Color-coded players and tokens
-
-3. **Tic Tac Toe**
-
-   - Classic two-player game of X's and O's
-   - Features a clean, modern interface
-   - Tracks game state and winner
-
-4. **Snake**
-
-   - Classic snake game with growing tail
-   - Obstacles and score tracking
-   - Smooth controls and animations
-
-5. **Basketball**
-
-   - Timing-based shooting game
-   - Power meter for shot control
-   - Score tracking and time limit
-
-6. **Snake & Ladders**
-
-   - Classic board game
-   - Random dice rolls
-   - Snakes and ladders effects
-
-7. **Math Challenge**
-   - Timed math problem solving
-   - Multiple difficulty levels
-   - Score tracking
+A collection of classic and modern games built with React, featuring interactive gameplay, sound effects, and responsive design.
 
 ## Features
 
-- Modern, responsive design
-- Smooth animations using Framer Motion
-- Consistent theming with Emotion
-- Mobile-friendly interface
-- Easy navigation between games
+- 🎮 Multiple classic games in one place
+- 🎨 Modern and responsive UI design
+- 🔊 Sound effects for enhanced gameplay
+- 🔍 Search functionality to find games quickly
+- 🌙 Dark theme optimized
+- 📱 Mobile-friendly design
+
+## Games Available
+
+1. **Snake**
+
+   - Classic snake game with modern graphics
+   - Growing snake mechanics
+   - Score tracking
+   - Collision detection
+
+2. **Chess**
+
+   - Two-player chess game
+   - Standard chess rules implementation
+   - Piece movement validation
+   - Check and checkmate detection
+
+3. **Ludo**
+
+   - Multi-player board game
+   - Dice rolling mechanics
+   - Token movement
+   - Win condition checking
+
+4. **Snake & Ladders**
+   - Classic board game
+   - Dice rolling with animations
+   - Snake and ladder mechanics
+   - Multiple player support
+   - Visual feedback for moves
+
+## Technologies Used
+
+- React.js
+- Vite
+- Emotion (for styled components)
+- React Router
+- React Icons
+- HTML5 Canvas (for some games)
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js (v14 or higher)
-- npm (v6 or higher)
+- npm or yarn
 
 ### Installation
 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/game-collection.git
+   git clone https://github.com/rajatgarg-bst/hackathon.git
    ```
 
 2. Navigate to the project directory:
 
    ```bash
-   cd game-collection
+   cd hackathon
    ```
 
 3. Install dependencies:
 
    ```bash
    npm install
+   # or
+   yarn install
    ```
 
 4. Start the development server:
 
    ```bash
    npm run dev
+   # or
+   yarn dev
    ```
 
 5. Open your browser and visit `http://localhost:5173`
 
-## Deployment
-
-This project is deployed using Vercel. To deploy your own version:
-
-1. Fork this repository
-2. Create a new project on [Vercel](https://vercel.com)
-3. Import your forked repository
-4. Vercel will automatically detect the Vite configuration and set up the build settings
-
-## Technologies Used
-
-- React
-- Vite
-- React Router
-- Emotion (for styling)
-- Framer Motion (for animations)
-
 ## Project Structure
 
 ```
-
+hackathon/
+├── public/
+│   ├── images/         # Game assets and icons
+│   └── sounds/         # Sound effects
+├── src/
+│   ├── components/     # Reusable components
+│   ├── pages/         # Page components
+│   ├── games/         # Game components
+│   ├── styles/        # Global styles and theme
+│   └── utils/         # Utility functions
+└── package.json
 ```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- React Icons for the game icons
+- Sound effects from various sources
+- Game assets created for this project
+
+## Contact
+
+Rajat Garg - [GitHub](https://github.com/rajatgarg-bst)
+
+Project Link: [https://github.com/rajatgarg-bst/hackathon](https://github.com/rajatgarg-bst/hackathon)
