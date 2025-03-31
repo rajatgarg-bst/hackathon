@@ -307,7 +307,7 @@ const games = [
     bgColor: "#9C27B0",
     color: "white",
   },
-	{
+  {
     id: "snake",
     title: "Snake",
     description: "Classic snake game with growing tail and obstacles",
@@ -325,7 +325,7 @@ const games = [
     bgColor: "#4CAF50",
     color: "white",
   },
-	{
+  {
     id: "sliding-puzzle",
     title: "Sliding Puzzle",
     description: "Arrange the numbers in order by sliding the tiles",
@@ -334,7 +334,7 @@ const games = [
     bgColor: "#607D8B",
     color: "white",
   },
-	{
+  {
     id: "color-matcher",
     title: "Color Matcher",
     description: "Match colors with their names",
@@ -352,7 +352,7 @@ const games = [
     bgColor: "#795548",
     color: "white",
   },
-	{
+  {
     id: "snake-and-ladders",
     title: "Snake & Ladders",
     description: "Roll the dice and climb ladders while avoiding snakes",
@@ -370,15 +370,15 @@ const games = [
     bgColor: "#3F51B5",
     color: "white",
   },
-	{
-    id: "basketball",
-    title: "Basketball",
-    description: "Test your timing in this basketball shooting game",
-    path: "/games/basketball",
-    icon: GiBasketballBall,
-    bgColor: "#E91E63",
-    color: "white",
-  },
+  // {
+  //   id: "basketball",
+  //   title: "Basketball",
+  //   description: "Test your timing in this basketball shooting game",
+  //   path: "/games/basketball",
+  //   icon: GiBasketballBall,
+  //   bgColor: "#E91E63",
+  //   color: "white",
+  // },
   {
     id: "sudoku",
     title: "Sudoku",
