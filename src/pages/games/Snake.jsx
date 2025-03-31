@@ -514,7 +514,7 @@ const DIFFICULTY_SETTINGS = {
 };
 
 const Snake = () => {
-  const { playClick, playMove, playEat, playLose, toggleSound, getSoundEnabled } = useGameSounds();
+  const { playClick, playMove, playEat, playWrong, toggleSound, getSoundEnabled } = useGameSounds();
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
 
   const [snake, setSnake] = useState(INITIAL_SNAKE);
@@ -655,7 +655,7 @@ const Snake = () => {
 
       if (checkCollision(head)) {
         setIsGameOver(true);
-        playLose();
+        playWrong();
         return prevSnake;
       }
 
@@ -683,9 +683,9 @@ const Snake = () => {
     checkCollision,
     playMove,
     playEat,
-    playLose,
+    playWrong,
     generateFood,
-    difficulty,
+    difficulty
   ]);
 
   useEffect(() => {
