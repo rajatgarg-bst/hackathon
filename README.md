@@ -2,6 +2,12 @@
 
 A modern web application featuring a collection of classic and engaging games built with React. The application provides a seamless gaming experience with a beautiful user interface and responsive design.
 
+<div align="center">
+
+### 🎮 [Play Now!](https://hackathon-ashy-eight.vercel.app/) 🎮
+
+</div>
+
 ## Features
 
 - 🎮 Collection of classic games including:
@@ -72,10 +78,6 @@ A modern web application featuring a collection of classic and engaging games bu
    ```
 
 5. Open your browser and visit `http://localhost:5173`
-
-## Demo
-
-You can try out the games at: [Game Hub Demo](https://hackathon-ashy-eight.vercel.app/)
 
 ## Project Structure
 
