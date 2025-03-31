@@ -45,6 +45,25 @@ export const useGameSounds = () => {
     setTimeout(() => createSound(196, 0.2, 'square'), 100); // Lower note
   }, []);
 
+  // Ludo dice sound - medium pitch, short duration
+  const playLudoDice = useCallback(() => {
+    if (!isSoundEnabled) return;
+    createSound(660, 0.15, 'sine'); // E5 note
+  }, []);
+
+  // Ludo move sound - medium pitch, short duration
+  const playLudoMove = useCallback(() => {
+    if (!isSoundEnabled) return;
+    createSound(550, 0.1, 'sine'); // C#5 note
+  }, []);
+
+  // Ludo capture sound - high pitch, short duration
+  const playLudoCapture = useCallback(() => {
+    if (!isSoundEnabled) return;
+    createSound(880, 0.2, 'sine'); // A5 note
+    setTimeout(() => createSound(1100, 0.15, 'sine'), 100); // Higher note
+  }, []);
+
   const toggleSound = useCallback(() => {
     isSoundEnabled = !isSoundEnabled;
     return isSoundEnabled;
@@ -56,6 +75,9 @@ export const useGameSounds = () => {
     playClick,
     playCorrect,
     playWrong,
+    playLudoDice,
+    playLudoMove,
+    playLudoCapture,
     toggleSound,
     getSoundEnabled
   };
