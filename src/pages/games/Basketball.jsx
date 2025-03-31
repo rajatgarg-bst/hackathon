@@ -93,17 +93,13 @@ const POWER_METER_SPEED = 50; // milliseconds
 const MAX_POWER = 100;
 
 const Basketball = () => {
-  const {
-    playClick,
-    playBasketballBounce,
-    playBasketballScore,
-    playBasketballMiss,
-  } = useGameSounds();
+  const { playClick, playCorrect, playWrong } = useGameSounds();
 
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
   const [isGameActive, setIsGameActive] = useState(false);
   const [isShooting, setIsShooting] = useState(false);
+  const [isCharging, setIsCharging] = useState(false);
   const [power, setPower] = useState(0);
   const [isPowerIncreasing, setIsPowerIncreasing] = useState(true);
   const [ballPosition, setBallPosition] = useState({ x: 50, y: 350 });
@@ -136,46 +132,47 @@ const Basketball = () => {
     return () => clearInterval(powerTimer);
   }, [isShooting, isPowerIncreasing]);
 
+  const handleMouseDown = useCallback(() => {
+    if (!isGameActive || isShooting) return;
+    setIsCharging(true);
+    playClick();
+  }, [isGameActive, isShooting, playClick]);
+
+  const handleMouseUp = useCallback(() => {
+    if (!isCharging || !isGameActive || isShooting) return;
+
+    setIsCharging(false);
+    setIsShooting(true);
+
+    const isScore = Math.random() < 0.5; // 50% chance of scoring
+    const finalX = isScore ? 100 : 200; // If scoring, ball goes through hoop
+    const finalY = isScore ? 50 : 100; // If scoring, ball goes through hoop
+
+    // Move ball to final position
+    setBallPosition({ x: finalX, y: finalY });
+
+    setTimeout(() => {
+      if (isScore) {
+        setScore((prev) => prev + 2);
+        playCorrect(); // Use correct sound for scoring
+      } else {
+        playWrong(); // Use wrong sound for missing
+      }
+      setIsShooting(false);
+      setBallPosition({ x: 50, y: 350 }); // Reset ball position
+    }, 1000);
+  }, [isCharging, isGameActive, isShooting, playCorrect, playWrong]);
+
   const startGame = () => {
     setScore(0);
     setTimeLeft(GAME_DURATION);
     setIsGameActive(true);
     setIsShooting(false);
+    setIsCharging(false);
     setPower(0);
     setIsPowerIncreasing(true);
     setBallPosition({ x: 50, y: 350 });
-  };
-
-  const handleShoot = useCallback(() => {
-    if (isShooting) return;
-
-    setIsShooting(true);
-    playBasketballBounce();
-
-    const angle = Math.random() * 30 + 45; // Random angle between 45 and 75 degrees
-    const power = Math.random() * 20 + 80; // Random power between 80 and 100
-    const isScore = Math.random() < 0.5; // 50% chance of scoring
-
-    setTimeout(() => {
-      if (isScore) {
-        setScore((prev) => prev + 2);
-        playBasketballScore();
-      } else {
-        playBasketballMiss();
-      }
-      setIsShooting(false);
-    }, 1000);
-  }, [
-    isShooting,
-    playBasketballBounce,
-    playBasketballScore,
-    playBasketballMiss,
-  ]);
-
-  const resetGame = () => {
-    setScore(0);
-    setIsShooting(false);
-    playClick();
+    playClick(); // Play click sound when starting game
   };
 
   return (
@@ -192,17 +189,19 @@ const Basketball = () => {
           style={{
             left: `${ballPosition.x}px`,
             top: `${ballPosition.y}px`,
+            transform: isCharging ? "scale(1.1)" : "scale(1)",
+            transition: "all 1s ease-out, transform 0.2s ease",
           }}
-          onMouseDown={handleShoot}
-          onMouseUp={handleShoot}
-          onMouseLeave={handleShoot}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
         />
       </GameArea>
       <Controls>
         <Button onClick={startGame} disabled={isGameActive}>
           Start Game
         </Button>
-        {isShooting && (
+        {isCharging && (
           <div
             style={{
               width: "200px",

@@ -9,7 +9,7 @@ import Home from "./pages/Home";
 import TicTacToe from "./pages/games/TicTacToe";
 import Snake from "./pages/games/Snake";
 import Chess from "./pages/games/Chess";
-import Basketball from "./pages/games/Basketball";
+// import Basketball from "./pages/games/Basketball";
 import Ludo from "./pages/games/Ludo";
 import SnakeAndLadders from "./pages/games/SnakeAndLadders";
 import MathChallenge from "./pages/games/MathChallenge";
@@ -42,7 +42,7 @@ function App() {
               <Route path="/games/tic-tac-toe" element={<TicTacToe />} />
               <Route path="/games/snake" element={<Snake />} />
               <Route path="/games/chess" element={<Chess />} />
-              <Route path="/games/basketball" element={<Basketball />} />
+              {/* <Route path="/games/basketball" element={<Basketball />} /> */}
               <Route path="/games/ludo" element={<Ludo />} />
               <Route
                 path="/games/snake-and-ladders"
@@ -54,8 +54,14 @@ function App() {
               <Route path="/games/color-matcher" element={<ColorMatcher />} />
               <Route path="/games/sudoku" element={<Sudoku />} />
               <Route path="/games/minesweeper" element={<Minesweeper />} />
-              <Route path="/games/memory-card-flip" element={<MemoryCardFlip />} />
-              <Route path="/games/world-map-puzzle" element={<WorldMapPuzzle />} />
+              <Route
+                path="/games/memory-card-flip"
+                element={<MemoryCardFlip />}
+              />
+              <Route
+                path="/games/world-map-puzzle"
+                element={<WorldMapPuzzle />}
+              />
               <Route path="/games/capitals-quiz" element={<CapitalsQuiz />} />
               <Route path="/games/table-tennis" element={<TableTennis />} />
             </Routes>

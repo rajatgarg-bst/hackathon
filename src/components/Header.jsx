@@ -119,7 +119,7 @@ const HeaderContainer = styled.header`
   padding: 1rem 2rem;
   display: flex;
   align-items: center;
-  gap: 2rem;
+  justify-content: space-between;
   z-index: 1000;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
@@ -136,6 +136,7 @@ const SearchWrapper = styled.div`
   flex: 1;
   max-width: 500px;
   min-width: 200px;
+  margin-left: auto;
 `;
 
 const Nav = styled.nav`
@@ -195,15 +196,15 @@ const games = [
     bgColor: "#2196F3",
     color: "white",
   },
-  {
-    id: "basketball",
-    title: "Basketball",
-    description: "Test your timing in this basketball shooting game",
-    path: "/games/basketball",
-    icon: GiBasketballBall,
-    bgColor: "#E91E63",
-    color: "white",
-  },
+  // {
+  //   id: "basketball",
+  //   title: "Basketball",
+  //   description: "Test your timing in this basketball shooting game",
+  //   path: "/games/basketball",
+  //   icon: GiBasketballBall,
+  //   bgColor: "#E91E63",
+  //   color: "white",
+  // },
   {
     id: "snake-and-ladders",
     title: "Snake & Ladders",
@@ -313,12 +314,12 @@ function Header() {
   return (
     <HeaderContainer>
       <Logo to="/">Game Collection</Logo>
-      {SearchComponent}
-      <Nav>
+      <SearchWrapper>{SearchComponent}</SearchWrapper>
+      {/* <Nav>
         <NavLink to="/">Home</NavLink>
         <NavLink to="/leaderboard">Leaderboard</NavLink>
         <NavLink to="/profile">Profile</NavLink>
-      </Nav>
+      </Nav> */}
     </HeaderContainer>
   );
 }
