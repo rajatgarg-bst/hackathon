@@ -442,11 +442,39 @@ function Home() {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const searchRef = useRef(null);
 
+  const handleGameClick = (game) => {
+    // Update recent games with the full game object including the icon
+    const gameToSave = {
+      id: game.id,
+      title: game.title,
+      description: game.description,
+      path: game.path,
+      bgColor: game.bgColor,
+      color: game.color,
+      timestamp: Date.now(),
+      // Store the icon name instead of the function
+      iconName: game.icon.name,
+    };
+
+    const updatedRecentGames = [
+      gameToSave,
+      ...recentGames.filter((g) => g.id !== game.id),
+    ].slice(0, 5); // Keep only 5 recent games
+
+    setRecentGames(updatedRecentGames);
+    localStorage.setItem("recentGames", JSON.stringify(updatedRecentGames));
+
+    // Navigate to game
+    navigate(game.path);
+    setIsSearchFocused(false);
+  };
+
   // Map icon names to actual icon components
   const iconMap = {
     GiTicTacToe,
     GiSnake,
     GiChessKing,
+    GiBasketballBall,
     GiDiceSixFacesFive,
     GiSnakeTongue,
     GiAbacus,
@@ -461,39 +489,6 @@ function Home() {
     GiPingPongBat,
   };
 
-  const getIconNameFromComponent = (iconComponent) => {
-    return (
-      Object.entries(iconMap).find(
-        (entry) => entry[1] === iconComponent
-      )?.[0] || ""
-    );
-  };
-
-  const handleGameClick = (game) => {
-    // Update recent games with the full game object including the icon
-    const gameToSave = {
-      id: game.id,
-      title: game.title,
-      path: game.path,
-      bgColor: game.bgColor,
-      color: game.color,
-      timestamp: Date.now(),
-      iconName: getIconNameFromComponent(game.icon), // Get icon name using the helper function
-    };
-
-    const updatedRecentGames = [
-      gameToSave,
-      ...recentGames.filter((g) => g.id !== game.id),
-    ].slice(0, 5);
-
-    setRecentGames(updatedRecentGames);
-    localStorage.setItem("recentGames", JSON.stringify(updatedRecentGames));
-
-    // Navigate to game
-    navigate(game.path);
-    setIsSearchFocused(false);
-  };
-
   useEffect(() => {
     // Load recent games from localStorage
     const savedRecentGames = localStorage.getItem("recentGames");
@@ -503,7 +498,7 @@ function Home() {
         setRecentGames(parsedGames);
       } catch (error) {
         console.error("Error parsing recent games:", error);
-        localStorage.removeItem("recentGames");
+        localStorage.removeItem("recentGames"); // Clear invalid data
         setRecentGames([]);
       }
     }
@@ -596,13 +591,12 @@ function Home() {
                 const IconComponent = iconMap[game.iconName];
                 if (!IconComponent) return null;
 
-                const fullGame = games.find((g) => g.id === game.id);
-                if (!fullGame) return null;
-
                 return (
                   <RecentGameItem
                     key={game.id}
-                    onClick={() => handleGameClick(fullGame)}
+                    onClick={() =>
+                      handleGameClick(games.find((g) => g.id === game.id))
+                    }
                   >
                     <RecentGameIcon bgColor={game.bgColor} color={game.color}>
                       <IconComponent />
