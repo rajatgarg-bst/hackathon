@@ -38,11 +38,37 @@ export const useGameSounds = () => {
     setTimeout(() => createSound(1100, 0.15, 'sine'), 100); // Higher note
   }, []);
 
+  // Math correct answer sound - ascending sequence
+  const playMathCorrect = useCallback(() => {
+    if (!isSoundEnabled) return;
+    createSound(440, 0.15, 'sine'); // A4 note
+    setTimeout(() => createSound(550, 0.15, 'sine'), 100); // C#5 note
+    setTimeout(() => createSound(660, 0.15, 'sine'), 200); // E5 note
+    setTimeout(() => createSound(880, 0.15, 'sine'), 300); // A5 note
+  }, []);
+
   // Wrong sound - low pitch, warning
   const playWrong = useCallback(() => {
     if (!isSoundEnabled) return;
     createSound(220, 0.2, 'square'); // A3 note
     setTimeout(() => createSound(196, 0.2, 'square'), 100); // Lower note
+  }, []);
+
+  // Lose sound - dramatic descending sequence
+  const playLose = useCallback(() => {
+    if (!isSoundEnabled) return;
+    createSound(880, 0.2, 'sine'); // A5 note
+    setTimeout(() => createSound(660, 0.2, 'sine'), 150); // E5 note
+    setTimeout(() => createSound(440, 0.2, 'sine'), 300); // A4 note
+    setTimeout(() => createSound(220, 0.2, 'sine'), 450); // A3 note
+  }, []);
+
+  // Math wrong answer sound - descending notes
+  const playMathWrong = useCallback(() => {
+    if (!isSoundEnabled) return;
+    createSound(440, 0.15, 'sine'); // A4 note
+    setTimeout(() => createSound(330, 0.15, 'sine'), 100); // E4 note
+    setTimeout(() => createSound(220, 0.15, 'sine'), 200); // A3 note
   }, []);
 
   // Ludo dice sound - medium pitch, short duration
@@ -75,6 +101,9 @@ export const useGameSounds = () => {
     playClick,
     playCorrect,
     playWrong,
+    playLose,
+    playMathWrong,
+    playMathCorrect,
     playLudoDice,
     playLudoMove,
     playLudoCapture,
