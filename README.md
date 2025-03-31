@@ -2,6 +2,8 @@
 
 A modern web application featuring a collection of classic and engaging games built with React. The application provides a seamless gaming experience with a beautiful user interface and responsive design.
 
+## Live Demo
+
 <div align="center">
 
 ### 🎮 [Play Now!](https://hackathon-ashy-eight.vercel.app/) 🎮
