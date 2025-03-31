@@ -22,7 +22,6 @@ A modern web application featuring a collection of classic and engaging games bu
   - Sliding Puzzle
   - Color Matcher
   - Math Challenge
-  - Crossword
   - Sudoku
   - Memory Card Flip
   - World Map Puzzle
