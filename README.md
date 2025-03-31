@@ -68,12 +68,14 @@ A modern web application featuring a collection of classic and engaging games bu
 4. Start the development server:
 
    ```bash
-   npm start
-   # or
-   yarn start
+   npm run dev
    ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
+5. Open your browser and visit `http://localhost:5173`
+
+## Demo
+
+You can try out the games at: [Game Hub Demo](https://hackathon-ashy-eight.vercel.app/)
 
 ## Project Structure
 
