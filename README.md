@@ -1,92 +1,40 @@
-# Game Collection
+# Game Hub
 
-A collection of classic and modern games built with React, featuring interactive gameplay, sound effects, and responsive design.
-
-## Live Demo
-
-🎮 [Play Now](https://hackathon-ashy-eight.vercel.app/)
+A modern web application featuring a collection of classic and engaging games built with React. The application provides a seamless gaming experience with a beautiful user interface and responsive design.
 
 ## Features
 
-- 🎮 Multiple classic games in one place
-- 🎨 Modern and responsive UI design
-- 🔊 Sound effects for enhanced gameplay
-- 🔍 Search functionality to find games quickly
-- 🌙 Dark theme optimized
-- 📱 Mobile-friendly design
+- 🎮 Collection of classic games including:
+  - Chess
+  - Ludo
+  - Snake & Ladders
+  - Snake
+  - Minesweeper
+  - Tic Tac Toe
+  - Sliding Puzzle
+  - Color Matcher
+  - Math Challenge
+  - Crossword
+  - Sudoku
+  - Memory Card Flip
+  - World Map Puzzle
+  - Capitals Quiz
+  - Table Tennis
 
-## Games Available
+- 🔍 Global search functionality to quickly find games
+- 📱 Responsive design that works on all devices
+- 🎨 Modern and intuitive user interface
+- ⚡ Fast and smooth animations using Framer Motion
+- 🎯 Recent games tracking
+- 🎨 Customizable themes and styling
 
-1. **Chess**
-
-   - Strategic two-player chess game with all standard rules
-
-2. **Ludo**
-
-   - Classic board game with four players and dice rolling
-
-3. **Snake**
-
-   - Classic snake game with growing tail and obstacles
-
-4. **Tic Tac Toe**
-
-   - Classic two-player game of X's and O's
-
-5. **Sliding Puzzle**
-
-   - Arrange the numbers in order by sliding the tiles
-
-6. **Color Matcher**
-
-   - Match colors with their names
-
-7. **Math Challenge**
-
-   - Test your math skills with timed problems
-
-8. **Snake & Ladders**
-
-   - Roll the dice and climb ladders while avoiding snakes
-
-9. **Crossword**
-
-   - Solve the crossword puzzle with React-themed clues
-
-<!-- 10. **Basketball**
-    - Test your timing in this basketball shooting game -->
-
-10. **Sudoku**
-
-    - Classic number puzzle game with 9x9 grid
-
-11. **Minesweeper**
-
-    - Classic puzzle game where you avoid hidden mines
-
-12. **Memory Card Flip**
-
-    - Test your memory by matching pairs of cards
-
-13. **World Map Puzzle**
-
-    - Drag and drop countries to the correct location
-
-14. **Capitals Quiz**
-
-    - Test your knowledge of world capitals
-
-15. **Table Tennis**
-    - Classic ping pong game with paddle controls
-
-## Technologies Used
+## Tech Stack
 
 - React.js
-- Vite
-- Emotion (for styled components)
-- React Router
-- React Icons
-- HTML5 Canvas (for some games)
+- React Router for navigation
+- Emotion for styled components
+- Framer Motion for animations
+- React Icons for game icons
 
 ## Getting Started
 
@@ -100,13 +48,13 @@ A collection of classic and modern games built with React, featuring interactive
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/rajatgarg-bst/hackathon.git
+   git clone https://github.com/yourusername/game-hub.git
    ```
 
 2. Navigate to the project directory:
 
    ```bash
-   cd hackathon
+   cd game-hub
    ```
 
 3. Install dependencies:
@@ -120,43 +68,35 @@ A collection of classic and modern games built with React, featuring interactive
 4. Start the development server:
 
    ```bash
-   npm run dev
+   npm start
    # or
-   yarn dev
+   yarn start
    ```
 
-5. Open your browser and visit `http://localhost:5173`
+5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
 
 ## Project Structure
 
 ```
-hackathon/
-├── public/
-│   ├── images/         # Game assets and icons
-│   └── sounds/         # Sound effects
-├── src/
-│   ├── components/     # Reusable components
-│   ├── pages/         # Page components
-│   ├── games/         # Game components
-│   ├── styles/        # Global styles and theme
-│   └── utils/         # Utility functions
-└── package.json
+src/
+├── components/         # Reusable UI components
+├── pages/             # Page components
+│   └── games/         # Game components
+├── utils/             # Utility functions and data
+├── App.jsx            # Main application component
+└── index.jsx          # Application entry point
 ```
 
 ## Contributing
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 
-- React Icons for the game icons
-- Sound effects from various sources
-- Game assets created for this project
+- Game icons from [React Icons](https://react-icons.github.io/react-icons/)
+- Styling inspiration from modern web applications
+- All game implementations are original and built from scratch

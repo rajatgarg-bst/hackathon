@@ -3,26 +3,9 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  GiTicTacToe,
-  GiSnake,
-  GiChessKing,
-  GiBasketballBall,
-  GiDiceSixFacesFive,
-  GiSnakeTongue,
-  GiAbacus,
-  GiPuzzle,
-  GiCrossedSwords,
-  GiPalette,
-  GiPerspectiveDiceSixFacesRandom,
-  GiMineExplosion,
-  GiCardRandom,
-  GiEarthAmerica,
-  GiWorld,
-  GiPingPongBat,
-} from "react-icons/gi";
 import { FaSearch, FaHistory } from "react-icons/fa";
 import Header from "../components/Header";
+import { games } from "../utils/gameList";
 
 // Create a function to handle dynamic styles
 const getBackgroundColor = (props) => props.bgColor || "#f0f0f0";
@@ -288,246 +271,63 @@ const GameDescription = styled.p`
   margin: 0;
 `;
 
-const games = [
-  {
-    id: "chess",
-    title: "Chess",
-    description: "Strategic two-player chess game with all standard rules",
-    path: "/games/chess",
-    icon: GiChessKing,
-    bgColor: "#FF9800",
-    color: "white",
-  },
-  {
-    id: "ludo",
-    title: "Ludo",
-    description: "Classic board game with four players and dice rolling",
-    path: "/games/ludo",
-    icon: GiDiceSixFacesFive,
-    bgColor: "#9C27B0",
-    color: "white",
-  },
-  {
-    id: "snake",
-    title: "Snake",
-    description: "Classic snake game with growing tail and obstacles",
-    path: "/games/snake",
-    icon: GiSnake,
-    bgColor: "#2196F3",
-    color: "white",
-  },
-  {
-    id: "tic-tac-toe",
-    title: "Tic Tac Toe",
-    description: "Classic two-player game of X's and O's",
-    path: "/games/tic-tac-toe",
-    icon: GiTicTacToe,
-    bgColor: "#4CAF50",
-    color: "white",
-  },
-  {
-    id: "sliding-puzzle",
-    title: "Sliding Puzzle",
-    description: "Arrange the numbers in order by sliding the tiles",
-    path: "/games/sliding-puzzle",
-    icon: GiPuzzle,
-    bgColor: "#607D8B",
-    color: "white",
-  },
-  {
-    id: "color-matcher",
-    title: "Color Matcher",
-    description: "Match colors with their names",
-    path: "/games/color-matcher",
-    icon: GiPalette,
-    bgColor: "#FF5722",
-    color: "white",
-  },
-  {
-    id: "math-challenge",
-    title: "Math Challenge",
-    description: "Test your math skills with timed problems",
-    path: "/games/math-challenge",
-    icon: GiAbacus,
-    bgColor: "#795548",
-    color: "white",
-  },
-  {
-    id: "snake-and-ladders",
-    title: "Snake & Ladders",
-    description: "Roll the dice and climb ladders while avoiding snakes",
-    path: "/games/snake-and-ladders",
-    icon: GiSnakeTongue,
-    bgColor: "#00BCD4",
-    color: "white",
-  },
-  {
-    id: "crossword",
-    title: "Crossword",
-    description: "Solve the crossword puzzle with React-themed clues",
-    path: "/games/crossword",
-    icon: GiCrossedSwords,
-    bgColor: "#3F51B5",
-    color: "white",
-  },
-  // {
-  //   id: "basketball",
-  //   title: "Basketball",
-  //   description: "Test your timing in this basketball shooting game",
-  //   path: "/games/basketball",
-  //   icon: GiBasketballBall,
-  //   bgColor: "#E91E63",
-  //   color: "white",
-  // },
-  {
-    id: "sudoku",
-    title: "Sudoku",
-    description: "Classic number puzzle game with 9x9 grid",
-    path: "/games/sudoku",
-    icon: GiPerspectiveDiceSixFacesRandom,
-    bgColor: "#009688",
-    color: "white",
-  },
-  {
-    id: "minesweeper",
-    title: "Minesweeper",
-    description: "Classic puzzle game where you avoid hidden mines",
-    path: "/games/minesweeper",
-    icon: GiMineExplosion,
-    bgColor: "#673AB7",
-    color: "white",
-  },
-  {
-    id: "memory-card-flip",
-    title: "Memory Card Flip",
-    description: "Test your memory by matching pairs of cards",
-    path: "/games/memory-card-flip",
-    icon: GiCardRandom,
-    bgColor: "#8BC34A",
-    color: "white",
-  },
-  {
-    id: "world-map-puzzle",
-    title: "World Map Puzzle",
-    description: "Drag and drop countries to the correct location",
-    path: "/games/world-map-puzzle",
-    icon: GiEarthAmerica,
-    bgColor: "#03A9F4",
-    color: "white",
-  },
-  {
-    id: "capitals-quiz",
-    title: "Capitals Quiz",
-    description: "Test your knowledge of world capitals",
-    path: "/games/capitals-quiz",
-    icon: GiWorld,
-    bgColor: "#9C27B0",
-    color: "white",
-  },
-  {
-    id: "table-tennis",
-    title: "Table Tennis",
-    description: "Classic ping pong game with paddle controls",
-    path: "/games/table-tennis",
-    icon: GiPingPongBat,
-    bgColor: "#FF5722",
-    color: "white",
-  },
-];
-
 function Home() {
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [recentGames, setRecentGames] = useState([]);
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const searchRef = useRef(null);
 
-  // Map icon names to actual icon components
-  const iconMap = {
-    GiTicTacToe,
-    GiSnake,
-    GiChessKing,
-    GiDiceSixFacesFive,
-    GiSnakeTongue,
-    GiAbacus,
-    GiPuzzle,
-    GiCrossedSwords,
-    GiPalette,
-    GiPerspectiveDiceSixFacesRandom,
-    GiMineExplosion,
-    GiCardRandom,
-    GiEarthAmerica,
-    GiWorld,
-    GiPingPongBat,
-  };
+  useEffect(() => {
+    const savedGames = localStorage.getItem("recentGames");
+    console.log("Loading saved games from localStorage:", savedGames);
+    if (savedGames) {
+      const parsedGames = JSON.parse(savedGames);
+      console.log("Parsed recent games:", parsedGames);
+      setRecentGames(parsedGames);
+    }
+  }, []);
 
-  // Helper function to get icon name from game object
   const getIconName = (game) => {
-    const iconEntry = Object.entries(iconMap).find(
-      ([iconName, icon]) => icon === game.icon
-    );
-    return iconEntry ? iconEntry[0] : null;
+    return game.icon;
   };
 
   const handleGameClick = (game) => {
-    const iconName = getIconName(game);
-    if (!iconName) return;
-
-    // Update recent games with the full game object including the icon
-    const gameToSave = {
+    console.log("Game clicked:", game);
+    // Create a complete game object with all necessary data
+    const gameData = {
       id: game.id,
-      title: game.title,
+      name: game.name,
+      description: game.description,
       path: game.path,
+      icon: game.icon,
       bgColor: game.bgColor,
       color: game.color,
-      timestamp: Date.now(),
-      iconName: iconName, // Store the icon name we found
+      timestamp: Date.now()
     };
+    console.log("Created game data:", gameData);
 
+    // Update recent games list
     const updatedRecentGames = [
-      gameToSave,
+      gameData,
       ...recentGames.filter((g) => g.id !== game.id),
     ].slice(0, 5);
+    console.log("Updated recent games:", updatedRecentGames);
 
+    // Save to state and localStorage
     setRecentGames(updatedRecentGames);
     localStorage.setItem("recentGames", JSON.stringify(updatedRecentGames));
-
+    
     // Navigate to game
     navigate(game.path);
-    setIsSearchFocused(false);
+    setShowSearchDropdown(false);
+    setSearchQuery("");
   };
-
-  useEffect(() => {
-    // Load recent games from localStorage
-    const savedRecentGames = localStorage.getItem("recentGames");
-    if (savedRecentGames) {
-      try {
-        const parsedGames = JSON.parse(savedRecentGames);
-        // Validate that each game has a valid icon
-        const validGames = parsedGames.filter((game) => iconMap[game.iconName]);
-        setRecentGames(validGames);
-      } catch (error) {
-        console.error("Error parsing recent games:", error);
-        localStorage.removeItem("recentGames");
-        setRecentGames([]);
-      }
-    }
-
-    // Handle click outside search dropdown
-    const handleClickOutside = (event) => {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setIsSearchFocused(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   const filteredGames = games.filter(
     (game) =>
-      game.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      game.description.toLowerCase().includes(searchTerm.toLowerCase())
+      game.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      game.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const formatTimeAgo = (timestamp) => {
@@ -547,13 +347,13 @@ function Home() {
       <SearchInput
         type="text"
         placeholder="Search games..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        onFocus={() => setIsSearchFocused(true)}
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        onFocus={() => setShowSearchDropdown(true)}
       />
       <SearchIcon />
       <AnimatePresence>
-        {isSearchFocused && searchTerm && (
+        {showSearchDropdown && searchQuery && (
           <SearchDropdown
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -569,7 +369,7 @@ function Home() {
                   {React.createElement(game.icon)}
                 </SearchResultIcon>
                 <SearchResultInfo>
-                  <SearchResultTitle>{game.title}</SearchResultTitle>
+                  <SearchResultTitle>{game.name}</SearchResultTitle>
                   <SearchResultDescription>
                     {game.description}
                   </SearchResultDescription>
@@ -598,21 +398,22 @@ function Home() {
             </RecentGamesHeader>
             <RecentGamesList>
               {recentGames.map((game) => {
-                const IconComponent = iconMap[game.iconName];
-                if (!IconComponent) return null;
+                // Find the original game from the games list to get the icon component
+                const originalGame = games.find(g => g.id === game.id);
+                if (!originalGame) return null;
 
                 return (
                   <RecentGameItem
                     key={game.id}
                     onClick={() =>
-                      handleGameClick(games.find((g) => g.id === game.id))
+                      handleGameClick(originalGame)
                     }
                   >
                     <RecentGameIcon bgColor={game.bgColor} color={game.color}>
-                      <IconComponent />
+                      {React.createElement(originalGame.icon)}
                     </RecentGameIcon>
                     <RecentGameInfo>
-                      <RecentGameTitle>{game.title}</RecentGameTitle>
+                      <RecentGameTitle>{game.name}</RecentGameTitle>
                       <RecentGameTime>
                         {formatTimeAgo(game.timestamp)}
                       </RecentGameTime>
@@ -635,7 +436,7 @@ function Home() {
               <GameIcon bgColor={game.bgColor} color={game.color}>
                 {React.createElement(game.icon)}
               </GameIcon>
-              <GameTitle>{game.title}</GameTitle>
+              <GameTitle>{game.name}</GameTitle>
               <GameDescription>{game.description}</GameDescription>
             </GameCard>
           ))}

@@ -3,17 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaSearch, FaHistory } from "react-icons/fa";
-import {
-  GiTicTacToe,
-  GiSnake,
-  GiChessKing,
-  GiBasketballBall,
-  GiDiceSixFacesFive,
-  GiSnakeTongue,
-  GiAbacus,
-  GiPuzzle,
-  GiCrossedSwords,
-} from "react-icons/gi";
+import { games } from "../utils/gameList";
 
 // Create a function to handle dynamic styles
 const getBackgroundColor = (props) => props.bgColor || "#f0f0f0";
@@ -139,125 +129,28 @@ const SearchWrapper = styled.div`
   margin-left: auto;
 `;
 
-const Nav = styled.nav`
-  display: flex;
-  gap: 2rem;
-  align-items: center;
-  margin-left: auto;
-  flex-shrink: 0;
-`;
-
-const NavLink = styled(Link)`
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
-  white-space: nowrap;
-
-  &:hover {
-    color: #7b61ff;
-  }
-`;
-
-const games = [
-  {
-    id: "chess",
-    title: "Chess",
-    description: "Strategic two-player chess game with all standard rules",
-    path: "/games/chess",
-    icon: GiChessKing,
-    bgColor: "#FF9800",
-    color: "white",
-  },
-  {
-    id: "ludo",
-    title: "Ludo",
-    description: "Classic board game with four players and dice rolling",
-    path: "/games/ludo",
-    icon: GiDiceSixFacesFive,
-    bgColor: "#9C27B0",
-    color: "white",
-  },
-  {
-    id: "tic-tac-toe",
-    title: "Tic Tac Toe",
-    description: "Classic two-player game of X's and O's",
-    path: "/games/tic-tac-toe",
-    icon: GiTicTacToe,
-    bgColor: "#4CAF50",
-    color: "white",
-  },
-  {
-    id: "snake",
-    title: "Snake",
-    description: "Classic snake game with growing tail and obstacles",
-    path: "/games/snake",
-    icon: GiSnake,
-    bgColor: "#2196F3",
-    color: "white",
-  },
-  // {
-  //   id: "basketball",
-  //   title: "Basketball",
-  //   description: "Test your timing in this basketball shooting game",
-  //   path: "/games/basketball",
-  //   icon: GiBasketballBall,
-  //   bgColor: "#E91E63",
-  //   color: "white",
-  // },
-  {
-    id: "snake-and-ladders",
-    title: "Snake & Ladders",
-    description: "Roll the dice and climb ladders while avoiding snakes",
-    path: "/games/snake-and-ladders",
-    icon: GiSnakeTongue,
-    bgColor: "#00BCD4",
-    color: "white",
-  },
-  {
-    id: "math-challenge",
-    title: "Math Challenge",
-    description: "Test your math skills with timed problems",
-    path: "/games/math-challenge",
-    icon: GiAbacus,
-    bgColor: "#795548",
-    color: "white",
-  },
-  {
-    id: "sliding-puzzle",
-    title: "Sliding Puzzle",
-    description: "Arrange the numbers in order by sliding the tiles",
-    path: "/games/sliding-puzzle",
-    icon: GiPuzzle,
-    bgColor: "#607D8B",
-    color: "white",
-  },
-  {
-    id: "crossword",
-    title: "Crossword",
-    description: "Solve the crossword puzzle with React-themed clues",
-    path: "/games/crossword",
-    icon: GiCrossedSwords,
-    bgColor: "#3F51B5",
-    color: "white",
-  },
-];
-
 function Header() {
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const searchRef = useRef(null);
 
   const handleGameClick = (game) => {
     navigate(game.path);
-    setIsSearchFocused(false);
+    setShowSearchDropdown(false);
+    setSearchQuery("");
   };
+
+  const filteredGames = games.filter(
+    (game) =>
+      game.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      game.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setIsSearchFocused(false);
+        setShowSearchDropdown(false);
       }
     };
 
@@ -265,61 +158,48 @@ function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const filteredGames = games.filter(
-    (game) =>
-      game.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      game.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const SearchComponent = (
-    <SearchContainer ref={searchRef}>
-      <SearchInput
-        type="text"
-        placeholder="Search games..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        onFocus={() => setIsSearchFocused(true)}
-      />
-      <SearchIcon />
-      <AnimatePresence>
-        {isSearchFocused && searchTerm && (
-          <SearchDropdown
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-          >
-            {filteredGames.map((game) => (
-              <SearchResultItem
-                key={game.id}
-                onClick={() => handleGameClick(game)}
-              >
-                <SearchResultIcon bgColor={game.bgColor} color={game.color}>
-                  {React.createElement(game.icon)}
-                </SearchResultIcon>
-                <SearchResultInfo>
-                  <SearchResultTitle>{game.title}</SearchResultTitle>
-                  <SearchResultDescription>
-                    {game.description}
-                  </SearchResultDescription>
-                </SearchResultInfo>
-              </SearchResultItem>
-            ))}
-          </SearchDropdown>
-        )}
-      </AnimatePresence>
-    </SearchContainer>
-  );
-
   return (
     <HeaderContainer>
-      <Logo to="/">Game Collection</Logo>
-      <SearchWrapper>{SearchComponent}</SearchWrapper>
-      {/* <Nav>
-        <NavLink to="/">Home</NavLink>
-        <NavLink to="/leaderboard">Leaderboard</NavLink>
-        <NavLink to="/profile">Profile</NavLink>
-      </Nav> */}
+      <Logo to="/">Game Hub</Logo>
+      <SearchWrapper>
+        <SearchContainer ref={searchRef}>
+          <SearchInput
+            type="text"
+            placeholder="Search games..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onFocus={() => setShowSearchDropdown(true)}
+          />
+          <SearchIcon />
+          <AnimatePresence>
+            {showSearchDropdown && searchQuery && (
+              <SearchDropdown
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+              >
+                {filteredGames.map((game) => (
+                  <SearchResultItem
+                    key={game.id}
+                    onClick={() => handleGameClick(game)}
+                  >
+                    <SearchResultIcon bgColor={game.bgColor} color={game.color}>
+                      {React.createElement(game.icon)}
+                    </SearchResultIcon>
+                    <SearchResultInfo>
+                      <SearchResultTitle>{game.name}</SearchResultTitle>
+                      <SearchResultDescription>
+                        {game.description}
+                      </SearchResultDescription>
+                    </SearchResultInfo>
+                  </SearchResultItem>
+                ))}
+              </SearchDropdown>
+            )}
+          </AnimatePresence>
+        </SearchContainer>
+      </SearchWrapper>
     </HeaderContainer>
   );
 }
