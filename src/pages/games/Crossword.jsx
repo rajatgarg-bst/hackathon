@@ -88,8 +88,7 @@ const Controls = styled.div`
 const Button = styled.button`
   background-color: ${(props) => props.theme.colors.primary};
   color: ${(props) => props.theme.colors.white};
-  padding: ${(props) => props.theme.spacing.sm}
-    ${(props) => props.theme.spacing.lg};
+  padding: ${(props) => props.theme.spacing.sm} ${(props) => props.theme.spacing.lg};
   border-radius: ${(props) => props.theme.borderRadius.sm};
   font-size: 1rem;
   transition: background-color 0.2s ease;
@@ -159,6 +158,46 @@ const Crossword = () => {
   const [direction, setDirection] = useState("across");
   const [grid, setGrid] = useState(crosswordData.grid);
   const [completedWords, setCompletedWords] = useState([]);
+
+  const isEditable = useCallback((row, col) => {
+    // Check if the cell is within grid bounds
+    if (row < 0 || row >= grid.length || col < 0 || col >= grid[0].length) {
+      return false;
+    }
+    // Check if the cell is a valid cell in the crossword
+    return grid[row][col] !== null;
+  }, [grid]);
+
+  const getCurrentWord = useCallback((row, col) => {
+    const cell = grid[row][col];
+    return direction === "across" 
+      ? crosswordData.words.across.find(w => w.number === parseInt(cell))
+      : crosswordData.words.down.find(w => w.number === parseInt(cell));
+  }, [grid, direction]);
+
+  const isWordComplete = useCallback((word) => {
+    if (!word) return false;
+    const cells = word.answer.split('').map((_, i) => {
+      const number = word.number + i;
+      return answers[number];
+    });
+    return cells.every(cell => cell && cell.length === 1);
+  }, [answers]);
+
+  const checkWord = useCallback((word) => {
+    if (!word) return false;
+    const userAnswer = word.answer.split('').map((_, i) => {
+      const number = word.number + i;
+      return answers[number];
+    }).join('');
+    return userAnswer.toUpperCase() === word.answer.toUpperCase();
+  }, [answers]);
+
+  const isPuzzleComplete = useCallback(() => {
+    return [...crosswordData.words.across, ...crosswordData.words.down].every(word => {
+      return isWordComplete(word) && checkWord(word);
+    });
+  }, [isWordComplete, checkWord]);
 
   const handleCellChange = useCallback(
     (row, col, value) => {
