@@ -1,22 +1,23 @@
 # Game Hub - A Collection of Classic Games
-## Modern Web Application Built with React
+## Modern Web Application Built with React & AI
+### Hackathon Project
 
 ---
 
 # Overview
 - A modern web application featuring a collection of classic games
 - Built with React and modern web technologies
+- Developed with AI assistance using Cursor.ai
 - Available at: https://hackathon-ashy-eight.vercel.app/
 
 ---
 
+
 # Key Features
 - Collection of 14+ classic games
 - Global search functionality
-- Responsive design
 - Modern UI with animations
 - Recent games tracking
-- Customizable themes
 
 ---
 
@@ -45,6 +46,7 @@
 - Animations: Framer Motion
 - Icons: React Icons
 - Build Tool: Vite
+- AI Development: Cursor.ai
 
 ---
 
@@ -61,21 +63,13 @@ src/
 
 ---
 
-# Key Features in Detail
-- **Global Search**: Quick access to any game
-- **Responsive Design**: Works on all devices
-- **Modern UI**: Clean and intuitive interface
-- **Animations**: Smooth transitions using Framer Motion
-- **Recent Games**: Quick access to recently played games
-
----
-
 # Development Setup
 1. Node.js (v14+)
 2. Clone repository
 3. Install dependencies
 4. Run development server
 5. Access at localhost:5173
+6. AI Development Environment: Cursor.ai
 
 ---
 
@@ -86,6 +80,8 @@ src/
 - Multiplayer support
 - Game achievements
 - Social features
+- Advanced AI features
+- AI-powered game recommendations
 
 ---
 
@@ -93,4 +89,5 @@ src/
 - Visit: https://hackathon-ashy-eight.vercel.app/
 - GitHub Repository Available
 - MIT Licensed
-- Open for contributions 
+- Open for contributions
+- Built with ❤️ using Cursor.ai 
