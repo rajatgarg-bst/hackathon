@@ -12,7 +12,6 @@
 
 ---
 
-
 # Key Features
 - Collection of 14+ classic games
 - Global search functionality
@@ -90,4 +89,5 @@ src/
 - GitHub Repository Available
 - MIT Licensed
 - Open for contributions
-- Built with ❤️ using Cursor.ai 
+- Built with ❤️ using Cursor.ai
+- [View AI Development Journey](https://docs.google.com/document/d/11DHqJOhMotGtzc5Fp0MyyitjFgdoAG-v6t3iGswFIfg/edit?tab=t.0) 
